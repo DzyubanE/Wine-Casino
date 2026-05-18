@@ -4,178 +4,139 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Wine Casino</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --green: #1a3a2a; --felt: #1e4430;
-  --gold: #c9a84c; --gold-l: #e8c97a;
-  --cream: #f5f0e8; --red: #7a1b2e;
-  --safe: env(safe-area-inset-bottom, 0px);
-}
+:root{--g:#1a3a2a;--felt:#1e4430;--gold:#c9a84c;--gl:#e8c97a;--cream:#f5f0e8;--red:#7a1b2e;--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{background:var(--green);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08) 0%,transparent 55%);pointer-events:none;z-index:0}
-
+body{background:var(--g);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08),transparent 55%);pointer-events:none;z-index:0}
 .screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.screen.active{display:flex;flex-direction:column;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-.gold{font-family:'Cormorant Garamond',serif;color:var(--gold)}
-.serif{font-family:'Cormorant Garamond',serif}
-.lbl{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4)}
-.mult{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--gold-l)}
-.spinner{width:36px;height:36px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.btn-gold{background:var(--gold);color:var(--green);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%}
-.btn-gold:active{background:var(--gold-l)}
-.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 20px;color:rgba(245,240,232,.65);font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer}
-.btn-ghost:active{border-color:var(--gold);color:var(--gold-l)}
+.screen.active{display:flex;flex-direction:column;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,.4)}
+input[type=text],input[type=number]{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:15px;padding:13px 16px;outline:none;-webkit-appearance:none;appearance:none}
+input:focus{border-color:var(--gold)}
+.btn-gold{background:var(--gold);color:var(--g);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%}
+.btn-gold:active{background:var(--gl)}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gl);cursor:pointer;white-space:nowrap}
+.btn-sm:active{background:rgba(201,168,76,.22)}
+.btn-sm:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:#e87c6e;cursor:pointer}
+.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 18px;color:rgba(245,240,232,.6);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.btn-ghost:active{border-color:var(--gold);color:var(--gl)}
 .back{background:none;border:none;color:rgba(245,240,232,.4);font-size:15px;cursor:pointer;padding:4px 0}
-.back:active{color:var(--cream)}
-
-label{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:8px}
-input[type=text]{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px;padding:14px 16px;outline:none;-webkit-appearance:none}
-input[type=text]:focus{border-color:var(--gold)}
-
+.page-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);flex:1}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(20px + var(--safe))}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px}
+.f-group{margin-bottom:18px}
+.tag{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:5px 10px;font-size:13px;color:var(--gl)}
+.tag .x{cursor:pointer;color:rgba(201,168,76,.5);font-size:15px;line-height:1}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:10px}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap}
-.pill{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px 18px;font-size:15px;cursor:pointer;color:var(--cream);min-height:44px;display:flex;align-items:center}
-.pill.sel,.pill:active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-l)}
-
-/* ── CFG ── */
-#cfg{position:fixed;inset:0;background:#0d1f14;z-index:999;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-#cfg.show{display:flex}
-.cfg-box{background:#1a3a2a;border:1px solid var(--gold);border-radius:20px;padding:28px 24px;width:100%;max-width:480px}
-.cfg-box h2{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);margin-bottom:6px}
-.cfg-box p{font-size:14px;color:rgba(245,240,232,.55);line-height:1.6;margin-bottom:14px}
-.cfg-box ol{padding-left:18px;margin-bottom:20px}
-.cfg-box li{font-size:13px;color:rgba(245,240,232,.5);margin-bottom:8px;line-height:1.5}
-.cfg-box a{color:var(--gold)}
-.cfg-box code{background:rgba(0,0,0,.3);border-radius:5px;padding:1px 6px;font-family:monospace;font-size:12px;color:var(--gold-l)}
-.cfg-box input{margin-bottom:12px}
-
-/* ── LANDING ── */
-#screen-landing{justify-content:center;align-items:center;padding:40px 24px;gap:0}
-.logo{font-family:'Cormorant Garamond',serif;font-size:clamp(60px,18vw,100px);font-weight:600;color:var(--gold);text-align:center;line-height:.88;letter-spacing:-2px}
-.logo-sub{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,232,.35);text-align:center;margin:10px 0 48px}
-.role-cards{display:flex;flex-direction:column;gap:14px;width:100%;max-width:400px}
-.role-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.22);border-radius:18px;padding:24px;cursor:pointer;display:flex;align-items:center;gap:18px;min-height:80px}
-.role-card:active{background:rgba(201,168,76,.1);border-color:var(--gold)}
-.role-icon{font-size:36px;flex-shrink:0}
-.role-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-l)}
-.role-desc{font-size:13px;color:rgba(245,240,232,.45);margin-top:2px}
-
-/* ── SETUP ── */
-#screen-setup{padding:0}
-.page-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
-.page-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-l);flex:1}
-.setup-scroll{flex:1;overflow-y:auto;padding:20px 20px 40px}
-.f-group{margin-bottom:22px}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mode-btn{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:14px 12px;cursor:pointer;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;text-align:center;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.mode-btn.sel,.mode-btn:active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold-l)}
-.mode-icon{font-size:24px}
-
-/* ── JOIN ── */
-#screen-join{padding:0}
-.join-scroll{flex:1;overflow-y:auto;padding:24px 20px 40px}
-
-/* ── HOST ── */
-#screen-host{padding:0}
-.h-topbar{padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:10px;flex-shrink:0}
-.h-code-btn{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);letter-spacing:5px;cursor:pointer;background:none;border:none;padding:0}
-.round-pill{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:8px;padding:6px 12px;font-size:13px;color:var(--gold-l);white-space:nowrap}
-.h-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
-.h-tab{flex:1;padding:13px 8px;font-size:13px;color:rgba(245,240,232,.35);cursor:pointer;border-bottom:2px solid transparent;text-align:center}
-.h-tab.active{color:var(--gold-l);border-bottom-color:var(--gold)}
-.h-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px}
-.h-bottom{display:flex;padding:12px 16px;padding-bottom:calc(12px + var(--safe));border-top:1px solid rgba(201,168,76,.12);gap:10px;flex-shrink:0}
-
-.bets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px}
-.bet-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px}
-.bet-card.correct{border-color:rgba(46,204,113,.45);background:rgba(46,204,113,.07)}
-.bet-card.wrong{border-color:rgba(192,57,43,.4);background:rgba(192,57,43,.06)}
-.bet-name{font-size:12px;color:rgba(245,240,232,.4);margin-bottom:5px}
-.bet-sel{font-size:14px;font-weight:500}
-.bet-amt{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
-
-.reveal-box{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:16px}
-.reveal-opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.rev-opt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 14px;cursor:pointer;font-size:14px;color:var(--cream);min-height:44px;display:flex;align-items:center}
-.rev-opt.sel,.rev-opt:active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold-l)}
-.btn-reveal{background:var(--red);border:none;border-radius:12px;padding:14px 24px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;min-height:48px}
-.btn-reveal:active{background:#9b2335}
-
-.player-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.player-row:last-child{border-bottom:none}
-.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0}
-
-.board-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:8px 0 16px}
-.wine-board{background:var(--felt);border:2px solid rgba(201,168,76,.35);border-radius:80px;padding:20px 24px;min-width:340px;display:inline-flex;box-shadow:inset 0 0 40px rgba(0,0,0,.4)}
-.board-cols{display:flex;gap:10px;align-items:flex-start}
-.board-col{display:flex;flex-direction:column;gap:5px}
-.board-col-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,168,76,.4);text-align:center;margin-bottom:3px}
-.bcell{border:1px solid rgba(201,168,76,.2);border-radius:6px;padding:5px 8px;font-size:11px;text-align:center;white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:4px;min-height:28px}
-.bcell.yr{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--gold-l);min-width:52px}
-.bcell img{width:16px;height:11px;object-fit:cover;border-radius:2px}
-.bdiv{width:1px;background:rgba(201,168,76,.15);align-self:stretch;margin:0 2px}
-.bcenter{display:flex;align-items:center;justify-content:center;padding:0 8px}
-.blogo{font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold);text-align:center;line-height:1.2;border:1px solid rgba(201,168,76,.3);border-radius:50%;width:64px;height:64px;display:flex;align-items:center;justify-content:center}
-
-/* ── PLAYER ── */
-#screen-player{padding:0}
-.p-header{padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.p-name{font-size:15px;color:rgba(245,240,232,.55);flex:1}
-.p-chips{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold)}
-.p-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(16px + var(--safe))}
-
-.lobby-box{text-align:center;padding:32px 0}
-.lobby-code{font-family:'Cormorant Garamond',serif;font-size:52px;color:var(--gold);letter-spacing:10px;margin:10px 0 4px}
-
-.round-bar{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.18);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:14px}
-.wine-num{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);line-height:1}
-
-.chips-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.chip{width:56px;height:56px;border-radius:50%;border:3px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;cursor:pointer;box-shadow:inset 0 -3px 0 rgba(0,0,0,.3);color:white}
-.chip:active{transform:scale(.92)}
-.c1{background:#d5d8dc;color:#333;border-color:#bbb}
-.c5{background:#c0392b;border-color:#e74c3c}
-.c10{background:#2471a3;border-color:#3498db}
-.c25{background:#1e8449;border-color:#2ecc71}
-.c50{background:#2c3e50;border-color:#7f8c8d}
-
-.bet-summary{display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:12px;margin-bottom:18px}
-.bet-amt-big{font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold)}
-.bet-sel-txt{font-size:14px;color:rgba(245,240,232,.45)}
-.bet-sel-txt.chosen{color:var(--gold-l)}
-.btn-clear{margin-left:auto;font-size:13px;color:rgba(245,240,232,.35);cursor:pointer;background:none;border:none;padding:8px;text-decoration:underline}
-
-.opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:10px}
-.opt{border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:12px 14px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.15);min-height:48px}
-.opt:active,.opt.sel{border-color:var(--gold);background:rgba(201,168,76,.14);color:var(--gold-l)}
-.opt img{width:20px;height:14px;object-fit:cover;border-radius:2px;flex-shrink:0}
-.sec-title{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);margin:18px 0 10px;display:flex;align-items:center;gap:8px}
-
-.result-box{background:rgba(0,0,0,.25);border-radius:16px;padding:28px 20px;text-align:center;margin-bottom:18px}
-.lb{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.15);border-radius:14px;overflow:hidden}
-.lb-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.04);gap:12px}
-.lb-row:last-child{border-bottom:none}
-.lb-rank{font-family:'Cormorant Garamond',serif;font-size:22px;color:rgba(201,168,76,.3);width:24px}
-.lb-rank.top{color:var(--gold)}
-.lb-chips{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
-
-.toast{position:fixed;bottom:calc(20px + var(--safe));left:50%;transform:translateX(-50%);background:rgba(20,50,32,.97);border:1px solid var(--gold);border-radius:12px;padding:13px 22px;font-size:14px;color:var(--cream);z-index:9998;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center}
+.pill{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;color:var(--cream);min-height:44px;display:flex;align-items:center}
+.pill.sel,.pill:active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
+.mult{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--gl)}
+.spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:calc(18px + var(--safe));left:50%;transform:translateX(-50%);background:rgba(18,46,28,.97);border:1px solid var(--gold);border-radius:12px;padding:12px 22px;font-size:14px;color:var(--cream);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{opacity:1}
 ::-webkit-scrollbar{display:none}
+.div{height:1px;background:rgba(201,168,76,.1);margin:16px 0}
+/* landing */
+#screen-landing{justify-content:center;align-items:center;padding:40px 24px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:clamp(58px,16vw,96px);font-weight:600;color:var(--gold);text-align:center;line-height:.88;letter-spacing:-2px}
+.logo-sub{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,232,.3);text-align:center;margin:10px 0 44px}
+.role-cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px}
+.role-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:22px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;min-height:76px}
+.role-card:active{background:rgba(201,168,76,.1);border-color:var(--gold)}
+.role-icon{font-size:34px;flex-shrink:0}
+.role-title{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--gl)}
+.role-desc{font-size:13px;color:rgba(245,240,232,.4);margin-top:2px}
+/* wine list */
+.wine-item{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.wine-item-head{display:flex;align-items:center;gap:10px;cursor:pointer}
+.wine-num-badge{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);width:28px;flex-shrink:0}
+.wine-title{flex:1;font-size:15px;font-weight:500}
+.wine-answers{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,.1)}
+.answer-chip{font-size:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px 10px;color:rgba(245,240,232,.5)}
+.answer-chip.set{border-color:rgba(201,168,76,.3);color:var(--gl)}
+/* add-opt */
+.add-opt-row{display:flex;gap:8px}
+.add-opt-row input{flex:1}
+/* host game */
+#screen-host{padding:0}
+.h-topbar{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.h-code-btn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);letter-spacing:5px;cursor:pointer;background:none;border:none;padding:0}
+.round-pill{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:8px;padding:5px 12px;font-size:13px;color:var(--gl);white-space:nowrap}
+.h-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
+.h-tab{flex:1;padding:12px 6px;font-size:13px;color:rgba(245,240,232,.35);cursor:pointer;border-bottom:2px solid transparent;text-align:center}
+.h-tab.active{color:var(--gl);border-bottom-color:var(--gold)}
+.h-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(14px + var(--safe))}
+.h-bottom{display:flex;padding:10px 14px;padding-bottom:calc(10px + var(--safe));border-top:1px solid rgba(201,168,76,.12);gap:10px;flex-shrink:0}
+.bets-table{width:100%;border-collapse:collapse;font-size:13px}
+.bets-table th{text-align:left;padding:8px 10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);border-bottom:1px solid rgba(201,168,76,.1);font-weight:400}
+.bets-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+.bets-table tr:last-child td{border-bottom:none}
+.reveal-cat{margin-bottom:14px}
+.reveal-cat-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:7px;display:flex;align-items:center;gap:8px}
+.reveal-opts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.rev-opt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13px;color:var(--cream);min-height:40px;display:flex;align-items:center}
+.rev-opt.sel{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
+.rev-opt:active{background:rgba(201,168,76,.1)}
+.player-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.player-row:last-child{border-bottom:none}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+/* player */
+#screen-player{padding:0}
+.p-header{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.p-name{font-size:14px;color:rgba(245,240,232,.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.p-chips{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold)}
+.p-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(20px + var(--safe))}
+.lobby-box{text-align:center;padding:40px 0}
+.lobby-code{font-family:'Cormorant Garamond',serif;font-size:50px;color:var(--gold);letter-spacing:10px;margin:10px 0 4px}
+.cat-block{background:rgba(0,0,0,.18);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;margin-bottom:12px}
+.cat-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cat-block-title{font-size:14px;font-weight:500}
+.opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px;margin-bottom:10px}
+.opt{border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.12);min-height:44px}
+.opt:active,.opt.sel{border-color:var(--gold);background:rgba(201,168,76,.13);color:var(--gl)}
+.opt img{width:18px;height:13px;object-fit:cover;border-radius:2px;flex-shrink:0}
+.stake-mini{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3);flex-shrink:0}
+.chip:active{transform:scale(.9)}
+.c1{background:#d5d8dc;color:#333;border-color:#aaa}
+.c5{background:#c0392b;color:#fff;border-color:#e74c3c}
+.c10{background:#2471a3;color:#fff;border-color:#3498db}
+.c25{background:#1e8449;color:#fff;border-color:#2ecc71}
+.c50{background:#2c3e50;color:#fff;border-color:#7f8c8d}
+.stake-amt{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);min-width:46px}
+.stake-clr{font-size:12px;color:rgba(245,240,232,.3);cursor:pointer;text-decoration:underline;padding:4px;background:none;border:none}
+.others-panel{background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:12px;margin-bottom:14px}
+.others-title{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:10px}
+.other-bet-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.other-bet-row:last-child{border-bottom:none}
+.other-name{font-size:13px;width:70px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.other-cats{flex:1;display:flex;flex-wrap:wrap;gap:4px}
+.other-cat-chip{font-size:11px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;color:rgba(245,240,232,.55)}
+.result-box{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px;margin-bottom:12px}
+.result-cat-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.result-cat-row:last-child{border-bottom:none}
+.result-cat-name{font-size:12px;color:rgba(245,240,232,.4);width:80px;flex-shrink:0}
+.result-val{flex:1;font-size:14px}
+.lb{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.12);border-radius:14px;overflow:hidden}
+.lb-row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,168,76,.3);width:22px}
+.lb-rank.top{color:var(--gold)}
+.lb-chips{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
 </style>
 </head>
 <body>
-
-
 <!-- LANDING -->
 <div id="screen-landing" class="screen">
   <div class="logo">Wine<br>Casino</div>
@@ -183,7 +144,7 @@ input[type=text]:focus{border-color:var(--gold)}
   <div class="role-cards">
     <div class="role-card" onclick="go('screen-setup')">
       <div class="role-icon">🎩</div>
-      <div><div class="role-title">Организатор</div><div class="role-desc">Создать игру и вести раунды</div></div>
+      <div><div class="role-title">Организатор</div><div class="role-desc">Настроить вина и запустить игру</div></div>
     </div>
     <div class="role-card" onclick="go('screen-join')">
       <div class="role-icon">🍷</div>
@@ -191,36 +152,17 @@ input[type=text]:focus{border-color:var(--gold)}
     </div>
   </div>
 </div>
-
-<!-- SETUP -->
+<!-- HOST SETUP -->
 <div id="screen-setup" class="screen">
   <div class="page-header">
     <button class="back" onclick="go('screen-landing')">← Назад</button>
-    <div class="page-title">Новая игра</div>
+    <div class="page-title">Настройка игры</div>
+    <button class="btn-sm" onclick="openCatsEditor()">Категории</button>
   </div>
-  <div class="setup-scroll">
-    <div class="f-group"><label>Название</label><input type="text" id="sess-name" value="Вечер с друзьями"></div>
+  <div class="scroll">
+    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Название сессии</div><input type="text" id="sess-name" value="Вечер с друзьями"></div>
     <div class="f-group">
-      <label>Режим поля</label>
-      <div class="mode-grid">
-        <div class="mode-btn sel" onclick="selMode(this,'full')"><div class="mode-icon">🗺</div>Полное поле<br><small style="opacity:.5;font-size:11px">Страны + годы + сорта</small></div>
-        <div class="mode-btn" onclick="selMode(this,'grapes')"><div class="mode-icon">🍇</div>Только сорта<br><small style="opacity:.5;font-size:11px">Красные и белые</small></div>
-        <div class="mode-btn" onclick="selMode(this,'russia')"><div class="mode-icon">🇷🇺</div>Российские<br><small style="opacity:.5;font-size:11px">Регионы России</small></div>
-        <div class="mode-btn" onclick="selMode(this,'countries')"><div class="mode-icon">🌍</div>Страны мира<br><small style="opacity:.5;font-size:11px">Старый и Новый свет</small></div>
-      </div>
-    </div>
-    <div class="f-group">
-      <label>Количество вин</label>
-      <div class="pill-row" id="rounds-pills">
-        <div class="pill" onclick="selPill(this,'rounds',4)">4</div>
-        <div class="pill sel" onclick="selPill(this,'rounds',6)">6</div>
-        <div class="pill" onclick="selPill(this,'rounds',8)">8</div>
-        <div class="pill" onclick="selPill(this,'rounds',10)">10</div>
-        <div class="pill" onclick="selPill(this,'rounds',12)">12</div>
-      </div>
-    </div>
-    <div class="f-group">
-      <label>Стартовые фишки</label>
+      <div class="lbl" style="margin-bottom:8px">Стартовые фишки</div>
       <div class="pill-row" id="chips-pills">
         <div class="pill" onclick="selPill(this,'chips',100)">100</div>
         <div class="pill sel" onclick="selPill(this,'chips',200)">200</div>
@@ -228,51 +170,65 @@ input[type=text]:focus{border-color:var(--gold)}
         <div class="pill" onclick="selPill(this,'chips',1000)">1000</div>
       </div>
     </div>
-    <button class="btn-gold" onclick="createSession()">Создать игру →</button>
+    <div class="div"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="lbl">Вина в игре</div>
+      <button class="btn-sm" onclick="addWine()">+ Добавить вино</button>
+    </div>
+    <div id="wines-list"></div>
+    <div style="height:16px"></div>
+    <button class="btn-gold" id="start-btn" onclick="createSession()" disabled>Запустить игру →</button>
   </div>
 </div>
-
+<!-- CATEGORIES EDITOR -->
+<div id="screen-setup-cats" class="screen">
+  <div class="page-header">
+    <button class="back" onclick="go('screen-setup')">← Назад</button>
+    <div class="page-title">Категории</div>
+  </div>
+  <div class="scroll" id="cats-editor"></div>
+</div>
+<!-- WINE EDITOR -->
+<div id="screen-wine-editor" class="screen">
+  <div class="page-header">
+    <button class="back" onclick="saveWineAndBack()">← К списку</button>
+    <div class="page-title" id="wine-editor-title">Вино №1</div>
+  </div>
+  <div class="scroll" id="wine-editor-body"></div>
+</div>
 <!-- JOIN -->
 <div id="screen-join" class="screen">
   <div class="page-header">
     <button class="back" onclick="go('screen-landing')">← Назад</button>
     <div class="page-title">Войти в игру</div>
   </div>
-  <div class="join-scroll">
-    <div class="f-group">
-      <label>Код сессии</label>
-      <input type="text" id="join-code" placeholder="ABC123" maxlength="6"
-        style="text-align:center;font-size:28px;letter-spacing:8px;text-transform:uppercase"
-        oninput="this.value=this.value.toUpperCase()" autocomplete="off" autocapitalize="characters">
+  <div class="scroll">
+    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Код сессии</div>
+      <input type="text" id="join-code" placeholder="ABC123" maxlength="6" style="text-align:center;font-size:28px;letter-spacing:8px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()" autocomplete="off" autocapitalize="characters">
     </div>
-    <div class="f-group">
-      <label>Ваше имя</label>
-      <input type="text" id="join-name" placeholder="Как тебя зовут?" autocomplete="given-name">
-    </div>
+    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Ваше имя</div><input type="text" id="join-name" placeholder="Как тебя зовут?" autocomplete="given-name"></div>
     <button class="btn-gold" onclick="joinSession()">Присоединиться →</button>
   </div>
 </div>
-
-<!-- HOST -->
+<!-- HOST GAME -->
 <div id="screen-host" class="screen">
   <div class="h-topbar">
     <button class="h-code-btn" id="h-code" onclick="copyCode()">------</button>
     <div style="flex:1"></div>
-    <div class="round-pill" id="h-round-pill">Раунд 1/6</div>
+    <div class="round-pill" id="h-round-pill">Вино 1/1</div>
   </div>
   <div class="h-tabs">
-    <div class="h-tab active" onclick="switchTab('bets')">Ставки</div>
-    <div class="h-tab" onclick="switchTab('players')">Игроки</div>
-    <div class="h-tab" onclick="switchTab('board')">Поле</div>
+    <div class="h-tab active" onclick="hTab('bets')">Ставки</div>
+    <div class="h-tab" onclick="hTab('reveal')">Ответы</div>
+    <div class="h-tab" onclick="hTab('players')">Игроки</div>
   </div>
   <div class="h-content" id="h-content"></div>
   <div class="h-bottom">
-    <button class="btn-ghost" style="flex:1" onclick="nextRound()">Следующий раунд →</button>
-    <button class="btn-ghost" onclick="endGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.6);padding:12px 16px">Финал</button>
+    <button class="btn-ghost" style="flex:1" id="h-next-btn" onclick="nextRound()">Следующее вино →</button>
+    <button class="btn-ghost" onclick="endGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.55);padding:12px 14px">Финал</button>
   </div>
 </div>
-
-<!-- PLAYER -->
+<!-- PLAYER GAME -->
 <div id="screen-player" class="screen">
   <div class="p-header">
     <div class="p-name" id="p-name-hdr">Игрок</div>
@@ -280,336 +236,416 @@ input[type=text]:focus{border-color:var(--gold)}
   </div>
   <div class="p-content" id="p-content"></div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-const BOARDS = {
-  full: {
-    sections: [
-      {id:'ow',label:'Старый свет',type:'countries',cells:[{l:'Франция',f:'fr'},{l:'Италия',f:'it'},{l:'Испания',f:'es'},{l:'Германия',f:'de'},{l:'Австрия',f:'at'},{l:'Португалия',f:'pt'},{l:'Грузия',f:'ge'},{l:'Венгрия',f:'hu'}]},
-      {id:'yr',label:'Год',type:'years',cells:[{l:'2011'},{l:'2012'},{l:'2013'},{l:'2014'},{l:'2015'},{l:'2016'},{l:'2017'},{l:'2018'},{l:'2019'},{l:'2020'},{l:'2021'},{l:'2022'}]},
-      {id:'nw',label:'Новый свет',type:'countries',cells:[{l:'США',f:'us'},{l:'Чили',f:'cl'},{l:'Аргентина',f:'ar'},{l:'Австралия',f:'au'},{l:'ЮАР',f:'za'},{l:'Н. Зеландия',f:'nz'}]},
-      {id:'rg',label:'Красные сорта',type:'grapes',cells:[{l:'Каберне Совиньон'},{l:'Пино Нуар'},{l:'Мерло'},{l:'Сира'},{l:'Санджовезе'},{l:'Зинфандель'},{l:'Каберне Фран'},{l:'Гаме'}]},
-      {id:'wg',label:'Белые сорта',type:'grapes',cells:[{l:'Шардоне'},{l:'Совиньон Блан'},{l:'Пино Гри'},{l:'Рислинг'},{l:'Гевюрцтраминер'},{l:'Шенен Блан'},{l:'Вионье'},{l:'Мускат'}]}
-    ],
-    mult:{countries:3,years:5,grapes:2}
-  },
-  grapes: {
-    sections: [
-      {id:'rg',label:'Красные сорта',type:'grapes',cells:[{l:'Каберне Совиньон'},{l:'Пино Нуар'},{l:'Мерло'},{l:'Сира'},{l:'Санджовезе'},{l:'Зинфандель'},{l:'Каберне Фран'},{l:'Гаме'}]},
-      {id:'wg',label:'Белые сорта',type:'grapes',cells:[{l:'Шардоне'},{l:'Совиньон Блан'},{l:'Пино Гри'},{l:'Рислинг'},{l:'Гевюрцтраминер'},{l:'Шенен Блан'},{l:'Вионье'},{l:'Мускат'}]}
-    ],
-    mult:{grapes:3}
-  },
-  russia: {
-    sections: [
-      {id:'rr',label:'Регионы России',type:'regions',cells:[{l:'Краснодарский кр.'},{l:'Крым'},{l:'Ростовская обл.'},{l:'Дагестан'},{l:'Ставропольский кр.'},{l:'Сев. Осетия'}]},
-      {id:'rg',label:'Красные (авт.)',type:'grapes',cells:[{l:'Цимлянский Чёрный'},{l:'Красностоп'},{l:'Бастардо'},{l:'Голубок'}]},
-      {id:'wg',label:'Белые (авт.)',type:'grapes',cells:[{l:'Кокур'},{l:'Сибирьковый'},{l:'Пухляковский'},{l:'Кумшацкий'}]}
-    ],
-    mult:{regions:3,grapes:4}
-  },
-  countries: {
-    sections: [
-      {id:'ow',label:'Старый свет',type:'countries',cells:[{l:'Франция',f:'fr'},{l:'Италия',f:'it'},{l:'Испания',f:'es'},{l:'Германия',f:'de'},{l:'Австрия',f:'at'},{l:'Португалия',f:'pt'},{l:'Грузия',f:'ge'},{l:'Венгрия',f:'hu'}]},
-      {id:'nw',label:'Новый свет',type:'countries',cells:[{l:'США',f:'us'},{l:'Чили',f:'cl'},{l:'Аргентина',f:'ar'},{l:'Австралия',f:'au'},{l:'ЮАР',f:'za'},{l:'Н. Зеландия',f:'nz'}]}
-    ],
-    mult:{countries:3}
-  }
-};
+const SUPA_URL='https://rxaeajvcxgcltfvarzau.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YWVhanZjeGdjbHRmdmFyemF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNjQyMzMsImV4cCI6MjA5NDY0MDIzM30.v8eUv0EyCWIOfjrST7b7mVGADNCpLMIkHJTtRv4hdxo';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-let sb=null,SUPA_URL='https://rxaeajvcxgcltfvarzau.supabase.co',SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YWVhanZjeGdjbHRmdmFyemF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNjQyMzMsImV4cCI6MjA5NDY0MDIzM30.v8eUv0EyCWIOfjrST7b7mVGADNCpLMIkHJTtRv4hdxo';
-const S={role:null,code:null,pid:null,pname:null,mode:'full',betAmt:0,betSel:null,revSel:null,ch:null,tab:'bets'};
-let _mode='full',_rounds=6,_chips=200;
+const DEFAULT_CATS=[
+  {id:'region',name:'Часть света',mult:2,enabled:true,options:['Старый свет','Новый свет']},
+  {id:'country',name:'Страна',mult:3,enabled:true,options:['Франция','Италия','Испания','Германия','Австрия','Португалия','Греция','Венгрия','Грузия','Молдова','Россия','Армения','Швейцария','Румыния','США','Чили','Аргентина','Австралия','Новая Зеландия','ЮАР','Уругвай','Бразилия']},
+  {id:'grape',name:'Сорт винограда',mult:2,enabled:true,options:['Каберне Совиньон','Мерло','Пино Нуар','Сира/Шираз','Санджовезе','Темпранильо','Зинфандель','Мальбек','Каберне Фран','Гренаш','Неббиоло','Барбера','Гаме','Шардоне','Совиньон Блан','Рислинг','Пино Гри','Гевюрцтраминер','Шенен Блан','Вионье','Мускат','Альбариньо','Вердехо','Грюнер Вельтлинер','Цимлянский Чёрный','Красностоп Золотовский','Кокур','Сибирьковый']},
+  {id:'aging',name:'Выдержка',mult:2,enabled:true,options:['Без выдержки','Сталь','Дуб (новый)','Дуб (старый)','Амфора','Бочка б/у']},
+  {id:'year',name:'Год урожая',mult:3,enabled:true,options:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023']}
+];
 
-function initSupa(){
-  try{sb=supabase.createClient(SUPA_URL,SUPA_KEY);return true}catch(e){toast("Ошибка подключения");return false}
-}
+const COUNTRY_FLAGS={'Франция':'fr','Италия':'it','Испания':'es','Германия':'de','Австрия':'at','Португалия':'pt','Греция':'gr','Венгрия':'hu','Грузия':'ge','Молдова':'md','Россия':'ru','Армения':'am','Швейцария':'ch','Румыния':'ro','США':'us','Чили':'cl','Аргентина':'ar','Австралия':'au','Новая Зеландия':'nz','ЮАР':'za','Уругвай':'uy','Бразилия':'br'};
+
+let ST={role:null,code:null,pid:null,pname:null,ch:null,htab:'bets',cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),wines:[],chips:200,editWineIdx:null,betState:{},revSels:{}};
+let _chips=200;
 
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function selMode(el,m){document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');_mode=m}
-function selPill(el,g,v){document.querySelectorAll(`#${g}-pills .pill`).forEach(b=>b.classList.remove('sel'));el.classList.add('sel');if(g==='rounds')_rounds=v;else _chips=v}
+function selPill(el,g,v){document.querySelectorAll('#'+g+'-pills .pill').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');if(g==='chips')_chips=v}
 
+// ── CATS EDITOR ──
+function openCatsEditor(){renderCatsEditor();go('screen-setup-cats')}
+function renderCatsEditor(){
+  const el=document.getElementById('cats-editor');
+  el.innerHTML=ST.cats.map((cat,ci)=>`
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <input type="text" value="${esc(cat.name)}" oninput="ST.cats[${ci}].name=this.value" style="flex:1;padding:10px 14px;font-size:14px;font-weight:500">
+        <span style="font-size:12px;color:rgba(245,240,232,.4)">×</span>
+        <input type="number" value="${cat.mult}" min="1" max="10" oninput="ST.cats[${ci}].mult=+this.value" style="width:54px;text-align:center;padding:9px 8px">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;font-size:13px;color:rgba(245,240,232,.5)">
+          <input type="checkbox" ${cat.enabled?'checked':''} onchange="ST.cats[${ci}].enabled=this.checked" style="width:18px;height:18px;accent-color:var(--gold)"> Вкл
+        </label>
+      </div>
+      <div class="tags-wrap">${cat.options.map((o,oi)=>`<span class="tag">${esc(o)}<span class="x" onclick="removeCatOpt(${ci},${oi})">×</span></span>`).join('')}</div>
+      <div class="add-opt-row">
+        <input type="text" id="nopt-${ci}" placeholder="Добавить вариант..." style="font-size:14px;padding:10px 14px">
+        <button class="btn-sm" onclick="addCatOpt(${ci})">+</button>
+      </div>
+    </div>`).join('')+`<button class="btn-sm" style="width:100%;padding:13px;margin-bottom:16px" onclick="addCat()">+ Добавить категорию</button>`;
+}
+function addCatOpt(ci){const inp=document.getElementById('nopt-'+ci);const v=inp.value.trim();if(!v)return;ST.cats[ci].options.push(v);inp.value='';renderCatsEditor()}
+function removeCatOpt(ci,oi){ST.cats[ci].options.splice(oi,1);renderCatsEditor()}
+function addCat(){ST.cats.push({id:'cat_'+Date.now(),name:'Новая категория',mult:2,enabled:true,options:[]});renderCatsEditor()}
+
+// ── WINES ──
+function addWine(){const idx=ST.wines.length;ST.wines.push({id:'w'+Date.now(),name:'Вино №'+(idx+1),answers:{}});renderWinesList();openWineEditor(idx)}
+function removeWine(idx){ST.wines.splice(idx,1);renderWinesList()}
+function renderWinesList(){
+  const el=document.getElementById('wines-list');
+  const eCats=ST.cats.filter(c=>c.enabled);
+  el.innerHTML=ST.wines.map((w,i)=>{
+    const chips=eCats.map(cat=>`<span class="answer-chip ${w.answers[cat.id]?'set':''}">${esc(cat.name)}: ${esc(w.answers[cat.id]||'—')}</span>`).join('');
+    return`<div class="wine-item">
+      <div class="wine-item-head" onclick="openWineEditor(${i})">
+        <div class="wine-num-badge">${i+1}</div>
+        <div class="wine-title">${esc(w.name)}</div>
+        <button class="btn-danger" onclick="event.stopPropagation();removeWine(${i})">✕</button>
+        <span style="font-size:18px;color:rgba(201,168,76,.4)">›</span>
+      </div>
+      <div class="wine-answers">${chips}</div>
+    </div>`;
+  }).join('')||'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3);font-size:14px">Нажмите «+ Добавить вино»</div>';
+  const allFilled=ST.wines.length>0&&ST.wines.every(w=>ST.cats.filter(c=>c.enabled).every(cat=>w.answers[cat.id]));
+  document.getElementById('start-btn').disabled=!allFilled;
+}
+function openWineEditor(idx){
+  ST.editWineIdx=idx;
+  document.getElementById('wine-editor-title').textContent='Вино №'+(idx+1);
+  renderWineEditor();
+  go('screen-wine-editor');
+}
+function renderWineEditor(){
+  const idx=ST.editWineIdx;const w=ST.wines[idx];
+  const eCats=ST.cats.filter(c=>c.enabled);
+  document.getElementById('wine-editor-body').innerHTML=`
+    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Название</div><input type="text" value="${esc(w.name)}" oninput="ST.wines[${idx}].name=this.value" placeholder="Вино №${idx+1}"></div>
+    <div class="div"></div>
+    <div class="lbl" style="margin-bottom:14px">Правильные ответы</div>
+    ${eCats.map(cat=>`
+      <div style="margin-bottom:18px">
+        <div style="font-size:14px;font-weight:500;margin-bottom:8px">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          ${cat.options.map(opt=>`<div class="rev-opt ${w.answers[cat.id]===opt?'sel':''}" onclick="setWineAnswer('${cat.id}','${esc2(opt)}')">${esc(opt)}</div>`).join('')}
+        </div>
+      </div><div class="div"></div>`).join('')}
+    <div style="height:8px"></div>
+    <button class="btn-gold" onclick="saveWineAndBack()">Сохранить →</button>`;
+}
+function setWineAnswer(catId,val){ST.wines[ST.editWineIdx].answers[catId]=val;renderWineEditor()}
+function saveWineAndBack(){go('screen-setup');renderWinesList()}
+
+// ── CREATE SESSION ──
 async function createSession(){
   const name=document.getElementById('sess-name').value.trim()||'Wine Casino';
   const code=genCode();
-  const{error}=await sb.from('sessions').insert({code,name,board_mode:_mode,total_rounds:_rounds,start_chips:_chips,current_round:1,phase:'lobby',players:{},bets:{},revealed:{}});
+  const{error}=await sb.from('sessions').insert({code,name,cats:ST.cats.filter(c=>c.enabled),wines:ST.wines,start_chips:_chips,current_round:1,phase:'betting',players:{},bets:{},revealed:{}});
   if(error){toast('Ошибка: '+error.message);return}
-  S.role='host';S.code=code;S.mode=_mode;
+  ST.role='host';ST.code=code;
   document.getElementById('h-code').textContent=code;
-  document.getElementById('h-round-pill').textContent=`Раунд 1/${_rounds}`;
   go('screen-host');
-  subscribeHost();
+  subHost();
   await refreshHost();
 }
 
+// ── JOIN ──
 async function joinSession(){
   const code=document.getElementById('join-code').value.trim().toUpperCase();
   const name=document.getElementById('join-name').value.trim();
-  if(code.length<4){toast('Введи код сессии');return}
+  if(code.length<4){toast('Введи код');return}
   if(!name){toast('Введи имя');return}
   const{data:sess,error}=await sb.from('sessions').select('*').eq('code',code).single();
   if(error||!sess){toast('Сессия не найдена');return}
-  if(sess.phase==='finished'){toast('Игра уже завершена');return}
+  if(sess.phase==='finished'){toast('Игра завершена');return}
   const pid=genId();
   const players=sess.players||{};
   players[pid]={name,chips:sess.start_chips};
   await sb.from('sessions').update({players}).eq('code',code);
-  S.role='player';S.code=code;S.pid=pid;S.pname=name;S.mode=sess.board_mode;S.betAmt=0;S.betSel=null;
+  ST.role='player';ST.code=code;ST.pid=pid;ST.pname=name;ST.betState={};
   document.getElementById('p-name-hdr').textContent=name;
   go('screen-player');
-  subscribePlayer();
+  subPlayer();
   renderPlayer(sess);
 }
 
-function subscribeHost(){
-  if(S.ch)sb.removeChannel(S.ch);
-  S.ch=sb.channel('h_'+S.code).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:`code=eq.${S.code}`},p=>refreshHost(p.new)).subscribe();
+// ── REALTIME ──
+function subHost(){
+  if(ST.ch)sb.removeChannel(ST.ch);
+  ST.ch=sb.channel('h_'+ST.code).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+ST.code},p=>refreshHost(p.new)).subscribe();
 }
-function subscribePlayer(){
-  if(S.ch)sb.removeChannel(S.ch);
-  S.ch=sb.channel('p_'+S.code+'_'+S.pid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:`code=eq.${S.code}`},p=>renderPlayer(p.new)).subscribe();
+function subPlayer(){
+  if(ST.ch)sb.removeChannel(ST.ch);
+  ST.ch=sb.channel('p_'+ST.code+'_'+ST.pid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+ST.code},p=>renderPlayer(p.new)).subscribe();
 }
 
+// ── HOST ──
 async function refreshHost(sess){
-  if(!sess){const{data}=await sb.from('sessions').select('*').eq('code',S.code).single();sess=data}
+  if(!sess){const{data}=await sb.from('sessions').select('*').eq('code',ST.code).single();sess=data}
   if(!sess)return;
-  S.mode=sess.board_mode;
-  document.getElementById('h-round-pill').textContent=`Раунд ${sess.current_round}/${sess.total_rounds}`;
+  const r=sess.current_round,total=sess.wines.length;
+  document.getElementById('h-round-pill').textContent='Вино '+r+'/'+total;
+  document.getElementById('h-next-btn').textContent=r>=total?'Завершить игру →':'Следующее вино →';
   renderHostTab(sess);
 }
-
-function switchTab(t){
-  S.tab=t;
-  document.querySelectorAll('.h-tab').forEach(el=>{el.classList.toggle('active',el.getAttribute('onclick')===`switchTab('${t}')`)});
-  sb.from('sessions').select('*').eq('code',S.code).single().then(({data})=>{if(data)renderHostTab(data)});
+function hTab(t){
+  ST.htab=t;
+  document.querySelectorAll('.h-tab').forEach(el=>el.classList.toggle('active',el.getAttribute('onclick')==="hTab('"+t+"')"));
+  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data)renderHostTab(data)});
 }
-
 function renderHostTab(sess){
   const el=document.getElementById('h-content');
-  if(S.tab==='bets')el.innerHTML=renderBetsTab(sess);
-  else if(S.tab==='players')el.innerHTML=renderPlayersTab(sess);
-  else el.innerHTML=`<div class="board-wrap">${buildBoard(sess.board_mode,true)}</div>`;
-  if(S.tab==='bets'){
-    document.querySelectorAll('.rev-opt').forEach(b=>{
-      b.onclick=()=>{document.querySelectorAll('.rev-opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');S.revSel=b.dataset.l};
-      if(b.dataset.l===S.revSel)b.classList.add('sel');
+  if(ST.htab==='bets')el.innerHTML=hostBetsHTML(sess);
+  else if(ST.htab==='reveal')el.innerHTML=hostRevealHTML(sess);
+  else el.innerHTML=hostPlayersHTML(sess);
+  if(ST.htab==='reveal')attachRevealHandlers(sess);
+}
+function hostBetsHTML(sess){
+  const r=sess.current_round,bets=(sess.bets||{})[r]||{},players=sess.players||{},cats=sess.cats||[],revealed=(sess.revealed||{})[r]||{};
+  const wine=sess.wines[r-1];
+  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:2px">${esc(wine?.name||'Вино №'+r)}</div>
+    <div class="lbl" style="margin-bottom:12px">Ставки: ${Object.keys(bets).length} из ${Object.keys(players).length}</div>
+    <div style="overflow-x:auto"><table class="bets-table"><thead><tr><th>Игрок</th><th>🪙</th>`;
+  cats.forEach(c=>h+=`<th>${esc(c.name)} <span class="mult">×${c.mult}</span></th>`);
+  h+='</tr></thead><tbody>';
+  Object.entries(players).sort((a,b)=>b[1].chips-a[1].chips).forEach(([pid,p])=>{
+    const pb=bets[pid]||{};
+    h+=`<tr><td style="font-size:13px;white-space:nowrap">${esc(p.name)}</td><td style="font-family:'Cormorant Garamond',serif;color:var(--gold)">${p.chips}</td>`;
+    cats.forEach(cat=>{
+      const bet=pb[cat.id],ans=revealed[cat.id];
+      if(!bet){h+=`<td style="color:rgba(245,240,232,.2)">—</td>`;return}
+      const mark=ans?(bet.sel===ans?'<span style="color:#2ecc71"> ✓</span>':'<span style="color:#e74c3c"> ✗</span>'):'';
+      h+=`<td><div style="font-size:12px">${esc(bet.sel)}${mark}</div><div style="font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--gold)">🪙${bet.amt}</div></td>`;
     });
-  }
+    h+='</tr>';
+  });
+  return h+'</tbody></table></div>';
 }
-
-function renderBetsTab(sess){
-  const bets=(sess.bets||{})[sess.current_round]||{};
-  const revealed=(sess.revealed||{})[sess.current_round];
-  const players=sess.players||{};
-  const cfg=BOARDS[sess.board_mode];
-  const betsGrid=Object.entries(players).map(([id,p])=>{
-    const bet=bets[id];
-    let cls='bet-card';
-    if(revealed&&bet)cls+=bet.selection===revealed?' correct':' wrong';
-    return`<div class="${cls}"><div class="bet-name">${p.name}</div>${bet?`<div class="bet-sel">${bet.selection}</div><div class="bet-amt">🪙 ${bet.amount}</div>`:`<div style="font-size:13px;color:rgba(245,240,232,.3)">Ожидание...</div>`}</div>`;
-  }).join('');
-  const opts=cfg.sections.map(sec=>sec.cells.map(c=>`<div class="rev-opt" data-l="${c.l}">${c.l}</div>`).join('')).join('');
-  const status=revealed?`<span style="color:#2ecc71">✓ Открыт: ${revealed}</span>`:`Ставки: ${Object.keys(bets).length} из ${Object.keys(players).length}`;
-  return`<div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold-l);margin-bottom:2px">Вино №${sess.current_round}</div>
-    <div style="font-size:13px;color:rgba(245,240,232,.4);margin-bottom:16px">${status}</div>
-    <div class="bets-grid">${betsGrid}</div>
-    <div class="reveal-box">
-      <div class="lbl" style="margin-bottom:10px">Правильный ответ</div>
-      <div class="reveal-opts">${opts}</div>
-      <button class="btn-reveal" onclick="revealAnswer()">🔓 Открыть ответ</button>
-    </div>`;
+function hostRevealHTML(sess){
+  const r=sess.current_round,wine=sess.wines[r-1],cats=sess.cats||[],revealed=(sess.revealed||{})[r]||{};
+  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gl);margin-bottom:16px">${esc(wine?.name||'Вино №'+r)}</div>`;
+  cats.forEach(cat=>{
+    const ans=revealed[cat.id];
+    h+=`<div class="reveal-cat"><div class="reveal-cat-lbl">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>`;
+    if(ans){
+      h+=`<div style="color:var(--gl);font-size:14px;display:flex;align-items:center;gap:6px">✓ ${esc(ans)}</div>`;
+    } else {
+      h+=`<div class="reveal-opts" data-cat="${cat.id}">${cat.options.map(o=>`<div class="rev-opt" data-l="${esc2(o)}">${esc(o)}</div>`).join('')}</div>
+        <button class="btn-sm" style="margin-top:6px" onclick="revealCat('${cat.id}')">Открыть ответ</button>`;
+    }
+    h+=`</div><div class="div"></div>`;
+  });
+  return h;
 }
-
-function renderPlayersTab(sess){
+function attachRevealHandlers(sess){
+  const r=sess.current_round,revealed=(sess.revealed||{})[r]||{};
+  document.querySelectorAll('.reveal-opts').forEach(container=>{
+    const catId=container.dataset.cat;
+    if(revealed[catId])return;
+    container.querySelectorAll('.rev-opt').forEach(btn=>{
+      btn.onclick=()=>{container.querySelectorAll('.rev-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');ST.revSels[catId]=btn.dataset.l};
+    });
+  });
+}
+async function revealCat(catId){
+  const sel=ST.revSels[catId];
+  if(!sel){toast('Выбери правильный ответ');return}
+  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
+  const r=sess.current_round,revealed=sess.revealed||{};
+  if(!revealed[r])revealed[r]={};
+  revealed[r][catId]=sel;
+  const players=sess.players||{},bets=(sess.bets||{})[r]||{};
+  const cat=(sess.cats||[]).find(c=>c.id===catId),mult=cat?.mult||2;
+  Object.entries(bets).forEach(([pid,pb])=>{
+    const bet=pb[catId];
+    if(bet&&players[pid]&&bet.sel===sel)players[pid].chips+=bet.amt*mult;
+  });
+  await sb.from('sessions').update({revealed,players}).eq('code',ST.code);
+  delete ST.revSels[catId];
+  toast('✓ '+cat?.name+': '+sel+' (×'+mult+')');
+}
+function hostPlayersHTML(sess){
   const players=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  if(!players.length)return`<div style="text-align:center;padding:40px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>`;
-  return`<div>${players.map(([id,p],i)=>`<div class="player-row">
-    <div class="avatar" style="background:${avatarCol(p.name)}">${p.name[0].toUpperCase()}</div>
-    <div style="flex:1;font-size:15px">${p.name}</div>
+  if(!players.length)return'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
+  return'<div>'+players.map(([id,p],i)=>`<div class="player-row">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,168,76,.3);width:20px">${i+1}</div>
+    <div class="avatar" style="background:${avc(p.name)}">${p.name[0].toUpperCase()}</div>
+    <div style="flex:1;font-size:15px">${esc(p.name)}</div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">🪙 ${p.chips}</div>
-  </div>`).join('')}</div>`;
+  </div>`).join('')+'</div>';
 }
-
-async function revealAnswer(){
-  if(!S.revSel){toast('Выбери правильный ответ');return}
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',S.code).single();
-  const answer=S.revSel,cfg=BOARDS[sess.board_mode];
-  let mult=2;
-  cfg.sections.forEach(sec=>{if(sec.cells.find(c=>c.l===answer))mult=cfg.mult[sec.type]||2});
-  const players=sess.players||{},bets=(sess.bets||{})[sess.current_round]||{};
-  Object.entries(bets).forEach(([pid,bet])=>{if(players[pid]&&bet.selection===answer)players[pid].chips+=bet.amount*mult});
-  const revealed=sess.revealed||{};revealed[sess.current_round]=answer;
-  await sb.from('sessions').update({players,revealed,phase:'revealed'}).eq('code',S.code);
-  S.revSel=null;toast(`✓ ${answer} — начислено ×${mult}`);
-}
-
 async function nextRound(){
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',S.code).single();
-  if(sess.current_round>=sess.total_rounds){endGame();return}
-  await sb.from('sessions').update({current_round:sess.current_round+1,phase:'betting'}).eq('code',S.code);
+  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
+  if(sess.current_round>=sess.wines.length){endGame();return}
+  ST.revSels={};
+  await sb.from('sessions').update({current_round:sess.current_round+1,phase:'betting'}).eq('code',ST.code);
 }
-
 async function endGame(){
-  await sb.from('sessions').update({phase:'finished'}).eq('code',S.code);
+  await sb.from('sessions').update({phase:'finished'}).eq('code',ST.code);
   toast('🏆 Игра завершена!');
 }
+async function copyCode(){try{await navigator.clipboard.writeText(ST.code)}catch(e){}toast('Код: '+ST.code)}
 
-async function copyCode(){
-  try{await navigator.clipboard.writeText(S.code);toast('Код скопирован: '+S.code)}
-  catch{toast('Код: '+S.code)}
-}
-
+// ── PLAYER ──
 function renderPlayer(sess){
   if(!sess)return;
-  const me=(sess.players||{})[S.pid];
+  const me=(sess.players||{})[ST.pid];
   if(me)document.getElementById('p-chips-hdr').textContent=me.chips;
   const el=document.getElementById('p-content');
-  const round=sess.current_round,myBet=((sess.bets||{})[round]||{})[S.pid],revealed=(sess.revealed||{})[round];
+  const r=sess.current_round,myBets=((sess.bets||{})[r]||{})[ST.pid]||null,revealed=(sess.revealed||{})[r]||{};
   if(sess.phase==='lobby'){el.innerHTML=lobbyHTML(sess);return}
   if(sess.phase==='finished'){el.innerHTML=finishedHTML(sess);return}
-  if(revealed){el.innerHTML=resultHTML(sess,myBet,revealed)+lbHTML(sess);return}
-  if(myBet){el.innerHTML=waitHTML(myBet)+lbHTML(sess);return}
-  el.innerHTML=bettingHTML(sess,me?me.chips:200);
-  attachBetHandlers(me?me.chips:200);
+  let html='';
+  if(Object.keys(revealed).length)html+=resultHTML(sess,myBets,revealed,r);
+  const unrevealed=(sess.cats||[]).filter(c=>!revealed[c.id]);
+  if(unrevealed.length)html+=bettingHTML(sess,me,unrevealed,myBets);
+  html+=othersHTML(sess,r);
+  html+=lbHTML(sess);
+  el.innerHTML=html;
+  attachPlayerHandlers(sess,me,unrevealed,myBets);
 }
-
 function lobbyHTML(sess){
   const count=Object.keys(sess.players||{}).length;
-  return`<div class="lobby-box">
-    <div class="lbl">Код сессии</div>
-    <div class="lobby-code">${sess.code}</div>
+  return`<div class="lobby-box"><div class="lbl">Код сессии</div><div class="lobby-code">${sess.code}</div>
     <div style="font-size:13px;color:rgba(245,240,232,.35);margin-bottom:24px">Организатор запустит игру</div>
-    <div class="spinner" style="margin:0 auto 14px"></div>
-    <div style="font-size:14px;color:rgba(245,240,232,.35)">${count} ${pl(count,'игрок','игрока','игроков')}</div>
-  </div>`;
+    <div class="spinner" style="margin:0 auto 12px"></div>
+    <div style="font-size:14px;color:rgba(245,240,232,.35)">${count} ${pl(count,'игрок','игрока','игроков')}</div></div>`;
 }
-
-function bettingHTML(sess,myChips){
-  const cfg=BOARDS[sess.board_mode];
-  let sects='';
-  cfg.sections.forEach(sec=>{
-    sects+=`<div class="sec-title">${sec.label} <span class="mult">×${cfg.mult[sec.type]||2}</span></div><div class="opts-grid">`;
-    sec.cells.forEach(c=>{sects+=`<div class="opt" data-l="${c.l}">${c.f?`<img src="https://flagcdn.com/w40/${c.f}.png" alt="">`:''} ${c.l}</div>`});
-    sects+='</div>';
-  });
-  return`<div class="round-bar">
-    <div class="wine-num">${sess.current_round}</div>
-    <div><div style="font-size:15px;font-weight:500">Вино №${sess.current_round}</div><div style="font-size:13px;color:rgba(245,240,232,.4)">Раунд ${sess.current_round} из ${sess.total_rounds}</div></div>
-  </div>
-  <div class="lbl" style="margin-bottom:10px">Ставка</div>
-  <div class="chips-row">
-    <div class="chip c1" data-v="1">1</div><div class="chip c5" data-v="5">5</div>
-    <div class="chip c10" data-v="10">10</div><div class="chip c25" data-v="25">25</div><div class="chip c50" data-v="50">50</div>
-  </div>
-  <div class="bet-summary">
-    <div><div style="font-size:11px;color:rgba(245,240,232,.35);margin-bottom:2px">Сумма</div><div class="bet-amt-big" id="p-amt">🪙 ${S.betAmt}</div></div>
-    <div style="flex:1;padding-left:14px"><div style="font-size:11px;color:rgba(245,240,232,.35);margin-bottom:2px">Выбор</div><div class="bet-sel-txt ${S.betSel?'chosen':''}" id="p-sel">${S.betSel||'—'}</div></div>
-    <button class="btn-clear" onclick="clearBet()">Сбросить</button>
-  </div>
-  ${sects}
-  <button class="btn-gold" id="p-submit" onclick="submitBet()" style="margin-top:8px" disabled>Поставить →</button>`;
-}
-
-function waitHTML(bet){
-  return`<div class="result-box">
-    <div style="font-size:40px;margin-bottom:14px">⏳</div>
-    <div style="font-size:16px;font-weight:500;margin-bottom:8px">Ставка: <span style="color:var(--gold-l)">${bet.selection}</span></div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold)">🪙 ${bet.amount}</div>
-    <div style="font-size:13px;color:rgba(245,240,232,.35);margin-top:14px">Ожидаем ответа...</div>
-    <div class="spinner" style="margin:16px auto 0"></div>
-  </div>`;
-}
-
-function resultHTML(sess,bet,revealed){
-  const cfg=BOARDS[sess.board_mode];let mult=2;
-  cfg.sections.forEach(sec=>{if(sec.cells.find(c=>c.l===revealed))mult=cfg.mult[sec.type]||2});
-  const won=bet&&bet.selection===revealed;
-  return`<div class="result-box">
-    ${won
-      ?`<div style="font-size:36px;color:#2ecc71;margin-bottom:12px">🎉 Угадали!</div>
-        <div style="font-size:15px;margin-bottom:8px">Выбор: <strong style="color:var(--gold-l)">${bet.selection}</strong></div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--gold)">+🪙 ${bet.amount*mult}</div>
-        <div style="font-size:13px;color:rgba(245,240,232,.35);margin-top:6px">${bet.amount} × ${mult}</div>`
-      :bet
-        ?`<div style="font-size:36px;color:#e74c3c;margin-bottom:12px">😔 Не угадали</div>
-          <div style="font-size:14px;color:rgba(245,240,232,.5)">Вы: ${bet.selection}<br>Ответ: <strong style="color:var(--gold-l)">${revealed}</strong></div>`
-        :`<div style="font-size:36px;margin-bottom:12px">🤷</div><div style="font-size:14px;color:rgba(245,240,232,.4)">Ставки не было</div>`}
-    <div style="font-size:13px;color:rgba(245,240,232,.3);margin-top:16px">Ожидайте следующий раунд...</div>
-  </div>`;
-}
-
-function finishedHTML(sess){
-  return`<div style="text-align:center;padding:32px 0 20px">
-    <div style="font-size:52px;margin-bottom:14px">🏆</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);margin-bottom:6px">Игра завершена!</div>
-    <div style="font-size:14px;color:rgba(245,240,232,.4);margin-bottom:28px">${sess.name}</div>
-  </div>${lbHTML(sess)}`;
-}
-
-function lbHTML(sess){
-  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  return`<div class="lbl" style="margin-bottom:10px">Рейтинг</div>
-  <div class="lb">${sorted.map(([id,p],i)=>`<div class="lb-row" style="${id===S.pid?'background:rgba(201,168,76,.06)':''}">
-    <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
-    <div style="flex:1;font-size:15px">${p.name}${id===S.pid?' <span style="font-size:11px;color:var(--gold);opacity:.6">(вы)</span>':''}</div>
-    <div class="lb-chips">🪙 ${p.chips}</div>
-  </div>`).join('')}</div>`;
-}
-
-function attachBetHandlers(maxChips){
-  document.querySelectorAll('.chip').forEach(c=>{c.addEventListener('click',()=>addChips(parseInt(c.dataset.v),maxChips))});
-  document.querySelectorAll('.opt').forEach(c=>{
-    c.addEventListener('click',()=>{document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');S.betSel=c.dataset.l;updBet()});
-    if(c.dataset.l===S.betSel)c.classList.add('sel');
-  });
-  updBet();
-}
-
-function addChips(n,max){if(S.betAmt+n>max){toast('Недостаточно фишек');return}S.betAmt+=n;updBet()}
-function clearBet(){S.betAmt=0;S.betSel=null;document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));updBet()}
-function updBet(){
-  const a=document.getElementById('p-amt'),s=document.getElementById('p-sel'),b=document.getElementById('p-submit');
-  if(a)a.textContent='🪙 '+S.betAmt;
-  if(s){s.textContent=S.betSel||'—';s.className='bet-sel-txt'+(S.betSel?' chosen':'')}
-  if(b)b.disabled=!S.betAmt||!S.betSel;
-}
-
-async function submitBet(){
-  if(!S.betAmt||!S.betSel)return;
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',S.code).single();
-  const me=(sess.players||{})[S.pid];
-  if(!me||S.betAmt>me.chips){toast('Недостаточно фишек');return}
-  const bets=sess.bets||{};
-  if(!bets[sess.current_round])bets[sess.current_round]={};
-  bets[sess.current_round][S.pid]={selection:S.betSel,amount:S.betAmt};
-  const players=sess.players;players[S.pid].chips-=S.betAmt;
-  await sb.from('sessions').update({bets,players}).eq('code',S.code);
-  S.betAmt=0;toast('Ставка принята!');
-}
-
-function buildBoard(mode,showMult){
-  const cfg=BOARDS[mode];
-  let h='<div class="wine-board"><div class="board-cols">';
-  cfg.sections.forEach((sec,i)=>{
-    if(i)h+='<div class="bdiv"></div>';
-    h+=`<div class="board-col"><div class="board-col-lbl">${sec.label}</div>`;
-    sec.cells.forEach(c=>{h+=`<div class="bcell${sec.type==='years'?' yr':''}">${c.f?`<img src="https://flagcdn.com/w40/${c.f}.png" alt="">`:''}${c.l}${showMult?` <span class="mult">×${cfg.mult[sec.type]||2}</span>`:''}</div>`});
+function bettingHTML(sess,me,cats,myBets){
+  const r=sess.current_round,wine=sess.wines[r-1];
+  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:4px">${esc(wine?.name||'Вино №'+r)}</div>
+    <div class="lbl" style="margin-bottom:14px">Раунд ${r} из ${sess.wines.length}</div>`;
+  cats.forEach(cat=>{
+    const existing=myBets?.[cat.id];
+    const bs=ST.betState[cat.id]||{sel:existing?.sel||null,amt:existing?.amt||0};
+    const locked=!!existing;
+    h+=`<div class="cat-block" data-cat="${cat.id}">
+      <div class="cat-block-head">
+        <div class="cat-block-title">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">${locked?'🔒':bs.sel?'🪙'+bs.amt:'—'}</div>
+      </div>`;
+    if(locked){
+      h+=`<div style="font-size:13px;color:rgba(245,240,232,.45)">Ставка: ${esc(existing.sel)} · 🪙${existing.amt}</div>`;
+    } else {
+      h+=`<div class="opts-grid">
+        ${cat.options.map(o=>{const f=COUNTRY_FLAGS[o];return`<div class="opt ${bs.sel===o?'sel':''}" data-cat="${cat.id}" data-opt="${esc2(o)}">${f?`<img src="https://flagcdn.com/w40/${f}.png" alt="">`:''} ${esc(o)}</div>`}).join('')}
+      </div>
+      <div class="stake-mini">
+        <div class="chip c1" data-cat="${cat.id}" data-v="1">1</div>
+        <div class="chip c5" data-cat="${cat.id}" data-v="5">5</div>
+        <div class="chip c10" data-cat="${cat.id}" data-v="10">10</div>
+        <div class="chip c25" data-cat="${cat.id}" data-v="25">25</div>
+        <div class="chip c50" data-cat="${cat.id}" data-v="50">50</div>
+        <div class="stake-amt" id="amt-${cat.id}">🪙${bs.amt}</div>
+        <button class="stake-clr" onclick="clearCatBet('${cat.id}')">Сброс</button>
+        <button class="btn-sm" id="sub-${cat.id}" onclick="submitCatBet('${cat.id}')" ${bs.sel&&bs.amt>0?'':'disabled'}>Поставить</button>
+      </div>`;
+    }
     h+='</div>';
   });
-  h+='<div class="bdiv"></div><div class="bcenter"><div class="blogo">Wine<br>Casino</div></div></div></div>';
   return h;
+}
+function othersHTML(sess,r){
+  const roundBets=(sess.bets||{})[r]||{},players=sess.players||{};
+  const others=Object.entries(roundBets).filter(([pid])=>pid!==ST.pid);
+  if(!others.length)return'';
+  let h=`<div class="others-panel"><div class="others-title">Ставки других игроков</div>`;
+  others.forEach(([pid,pb])=>{
+    const pname=players[pid]?.name||'?';
+    const chips=Object.entries(pb).map(([catId,bet])=>{
+      const cat=(sess.cats||[]).find(c=>c.id===catId);
+      return`<span class="other-cat-chip">${esc(cat?.name||catId)}: ${esc(bet.sel)} · 🪙${bet.amt}</span>`;
+    }).join('');
+    h+=`<div class="other-bet-row"><div class="other-name">${esc(pname)}</div><div class="other-cats">${chips||'<span style="font-size:11px;color:rgba(245,240,232,.2)">нет</span>'}</div></div>`;
+  });
+  return h+'</div>';
+}
+function resultHTML(sess,myBets,revealed,r){
+  const wine=sess.wines[r-1];
+  let h=`<div class="result-box"><div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gl);margin-bottom:12px">Открытые ответы</div>`;
+  (sess.cats||[]).forEach(cat=>{
+    const ans=revealed[cat.id];if(!ans)return;
+    const myBet=myBets?.[cat.id],won=myBet&&myBet.sel===ans;
+    h+=`<div class="result-cat-row">
+      <div class="result-cat-name">${esc(cat.name)}</div>
+      <div class="result-val"><div style="color:var(--gl)">${esc(ans)}</div>
+        ${myBet?`<div style="font-size:12px;color:rgba(245,240,232,.4)">Вы: ${esc(myBet.sel)} ${won?'✓':'✗'}</div>`:'<div style="font-size:12px;color:rgba(245,240,232,.25)">Ставки не было</div>'}
+      </div>
+      ${myBet?`<div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:${won?'#2ecc71':'#e74c3c'}">${won?'+🪙'+(myBet.amt*cat.mult):'-🪙'+myBet.amt}</div>`:''}
+    </div>`;
+  });
+  return h+'</div>';
+}
+function lbHTML(sess){
+  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
+  return`<div class="lbl" style="margin:16px 0 10px">Рейтинг</div><div class="lb">${sorted.map(([id,p],i)=>`
+    <div class="lb-row" style="${id===ST.pid?'background:rgba(201,168,76,.06)':''}">
+      <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
+      <div class="avatar" style="background:${avc(p.name)};width:28px;height:28px;font-size:12px">${p.name[0].toUpperCase()}</div>
+      <div style="flex:1;font-size:14px">${esc(p.name)}${id===ST.pid?' <span style="font-size:11px;opacity:.5">(вы)</span>':''}</div>
+      <div class="lb-chips">🪙 ${p.chips}</div>
+    </div>`).join('')}</div>`;
+}
+function finishedHTML(sess){
+  return`<div style="text-align:center;padding:32px 0 20px">
+    <div style="font-size:50px;margin-bottom:14px">🏆</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);margin-bottom:6px">Игра завершена!</div>
+    <div style="font-size:14px;color:rgba(245,240,232,.4);margin-bottom:28px">${esc(sess.name)}</div>
+  </div>${lbHTML(sess)}`;
+}
+function attachPlayerHandlers(sess,me,cats,myBets){
+  document.querySelectorAll('.opt').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const catId=el.dataset.cat,opt=el.dataset.opt;
+      if(!ST.betState[catId])ST.betState[catId]={sel:null,amt:0};
+      ST.betState[catId].sel=opt;
+      document.querySelectorAll('.opt[data-cat="'+catId+'"]').forEach(o=>o.classList.toggle('sel',o.dataset.opt===opt));
+      updCat(catId);
+    });
+  });
+  document.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const catId=el.dataset.cat,v=+el.dataset.v;
+      if(!ST.betState[catId])ST.betState[catId]={sel:null,amt:0};
+      const myChips=me?me.chips:0;
+      const otherSpent=Object.entries(ST.betState).filter(([cid])=>cid!==catId).reduce((s,[,b])=>s+(b.amt||0),0);
+      const alreadyBet=Object.values(myBets||{}).reduce((s,b)=>s+b.amt,0);
+      const available=myChips+alreadyBet-otherSpent;
+      if(ST.betState[catId].amt+v>available){toast('Недостаточно фишек');return}
+      ST.betState[catId].amt+=v;
+      updCat(catId);
+    });
+  });
+}
+function updCat(catId){
+  const bs=ST.betState[catId]||{sel:null,amt:0};
+  const a=document.getElementById('amt-'+catId);if(a)a.textContent='🪙'+bs.amt;
+  const s=document.getElementById('sub-'+catId);if(s)s.disabled=!(bs.sel&&bs.amt>0);
+}
+function clearCatBet(catId){
+  ST.betState[catId]={sel:null,amt:0};
+  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data)renderPlayer(data)});
+}
+async function submitCatBet(catId){
+  const bs=ST.betState[catId];
+  if(!bs?.sel||!bs?.amt){toast('Выбери вариант и ставку');return}
+  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
+  const me=(sess.players||{})[ST.pid];if(!me)return;
+  const roundBets=sess.bets||{};const r=sess.current_round;
+  if(!roundBets[r])roundBets[r]={};
+  if(!roundBets[r][ST.pid])roundBets[r][ST.pid]={};
+  roundBets[r][ST.pid][catId]={sel:bs.sel,amt:bs.amt};
+  const players=sess.players;
+  players[ST.pid].chips-=bs.amt;
+  await sb.from('sessions').update({bets:roundBets,players}).eq('code',ST.code);
+  delete ST.betState[catId];
+  toast('Ставка: '+bs.sel+' · 🪙'+bs.amt);
 }
 
 function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<6;i++)r+=c[~~(Math.random()*c.length)];return r}
 function genId(){return Math.random().toString(36).slice(2,11)}
-const AV=['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];
-function avatarCol(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%AV.length;return AV[h]}
+const AVC=['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];
+function avc(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%AVC.length;return AVC[h]}
 function pl(n,one,few,many){if(n%10===1&&n%100!==11)return one;if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return few;return many}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function esc2(s){return String(s).replace(/'/g,"\\'").replace(/\\/g,'\\\\')}
 
-window.addEventListener('DOMContentLoaded',()=>{if(initSupa())go('screen-landing')});
+window.addEventListener('DOMContentLoaded',()=>{renderWinesList();go('screen-landing')});
 </script>
 </body>
 </html>
