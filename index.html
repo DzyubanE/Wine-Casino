@@ -14,31 +14,30 @@ html,body{height:100%;overflow:hidden}
 body{background:var(--g);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08),transparent 55%);pointer-events:none;z-index:0}
 .screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.screen.active{display:flex;flex-direction:column;animation:fi .25s ease}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.screen.active{display:flex;flex-direction:column;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,.4)}
 input[type=text],input[type=number]{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:15px;padding:13px 16px;outline:none;-webkit-appearance:none}
 input:focus{border-color:var(--gold)}
-.btn-gold{background:var(--gold);color:var(--g);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%;transition:background .15s}
+.btn-gold{background:var(--gold);color:var(--g);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%}
 .btn-gold:active{background:var(--gl)}
 .btn-gold:disabled{opacity:.35;cursor:not-allowed}
 .btn-sm{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gl);cursor:pointer;white-space:nowrap}
 .btn-sm:active{background:rgba(201,168,76,.22)}
-.btn-sm:disabled{opacity:.35;cursor:not-allowed}
 .btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 18px;color:rgba(245,240,232,.6);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
 .btn-ghost:active{border-color:var(--gold);color:var(--gl)}
 .btn-danger{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:#e87c6e;cursor:pointer}
 .back{background:none;border:none;color:rgba(245,240,232,.4);font-size:15px;cursor:pointer;padding:4px 0}
 .page-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
 .page-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);flex:1}
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(20px + var(--safe))}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(24px + var(--safe))}
 .f-group{margin-bottom:18px}
 .tag{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:5px 10px;font-size:13px;color:var(--gl)}
 .tag .x{cursor:pointer;color:rgba(201,168,76,.5);font-size:15px;line-height:1}
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:10px}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap}
 .pill{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;color:var(--cream);min-height:44px;display:flex;align-items:center}
-.pill.sel,.pill:active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
+.pill.sel{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
 .mult{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--gl)}
 .spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -60,7 +59,7 @@ input:focus{border-color:var(--gold)}
 .role-title{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--gl)}
 .role-desc{font-size:13px;color:rgba(245,240,232,.4);margin-top:2px}
 
-/* WINE LIST */
+/* SETUP */
 .wine-item{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .wine-item-head{display:flex;align-items:center;gap:10px;cursor:pointer}
 .wine-num-badge{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);width:28px;flex-shrink:0}
@@ -69,7 +68,6 @@ input:focus{border-color:var(--gold)}
 .answer-chip.set{border-color:rgba(201,168,76,.3);color:var(--gl)}
 .rev-opt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13px;color:var(--cream);min-height:40px;display:flex;align-items:center}
 .rev-opt.sel{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
-.rev-opt:active{background:rgba(201,168,76,.1)}
 
 /* HOST GAME */
 #screen-host{padding:0}
@@ -85,8 +83,6 @@ input:focus{border-color:var(--gold)}
 .bets-table th{text-align:left;padding:8px 10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);border-bottom:1px solid rgba(201,168,76,.1);font-weight:400}
 .bets-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
 .bets-table tr:last-child td{border-bottom:none}
-.reveal-cat{margin-bottom:14px}
-.reveal-cat-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:7px;display:flex;align-items:center;gap:8px}
 .player-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
 .player-row:last-child{border-bottom:none}
 .avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
@@ -96,93 +92,97 @@ input:focus{border-color:var(--gold)}
 .p-header{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:12px;flex-shrink:0}
 .p-name{font-size:14px;color:rgba(245,240,232,.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .p-chips{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold)}
-.p-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(20px + var(--safe))}
+.p-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 
-/* LOBBY */
-.lobby-box{text-align:center;padding:40px 0}
+/* PLAYER VIEWS — full-height panels inside p-content */
+.p-view{min-height:100%;padding:16px 16px calc(24px + var(--safe))}
+
+/* Lobby */
+.lobby-box{text-align:center;padding:48px 0}
 .lobby-code{font-family:'Cormorant Garamond',serif;font-size:50px;color:var(--gold);letter-spacing:10px;margin:10px 0 4px}
 
-/* BETTING — category blocks */
-.cat-block{background:rgba(0,0,0,.18);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;margin-bottom:12px;transition:border-color .2s}
-.cat-block.done{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.05)}
+/* Betting */
+.cat-block{background:rgba(0,0,0,.18);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;margin-bottom:12px}
+.cat-block.done{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06)}
 .cat-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cat-block-title{font-size:14px;font-weight:500}
-.opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px;margin-bottom:10px}
-.opt{border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.12);min-height:44px;transition:all .15s}
+.cat-title{font-size:14px;font-weight:500}
+.opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:7px;margin-bottom:10px}
+.opt{border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.12);min-height:44px}
 .opt:active,.opt.sel{border-color:var(--gold);background:rgba(201,168,76,.13);color:var(--gl)}
 .opt img{width:18px;height:13px;object-fit:cover;border-radius:2px;flex-shrink:0}
-.chips-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.chip{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3);flex-shrink:0;transition:transform .1s}
+.chips-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3);flex-shrink:0}
 .chip:active{transform:scale(.88)}
 .c1{background:#d5d8dc;color:#333;border-color:#aaa}
 .c5{background:#c0392b;color:#fff;border-color:#e74c3c}
 .c10{background:#2471a3;color:#fff;border-color:#3498db}
 .c25{background:#1e8449;color:#fff;border-color:#2ecc71}
 .c50{background:#2c3e50;color:#fff;border-color:#7f8c8d}
-.chip-row-bottom{display:flex;align-items:center;gap:8px;margin-top:4px}
-.stake-display{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);min-width:50px}
+.chip-foot{display:flex;align-items:center;gap:8px;margin-top:2px}
+.stake-disp{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);min-width:48px}
 .btn-clr{background:none;border:none;color:rgba(245,240,232,.3);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px}
 
-/* CONFIRM SCREEN (overlay style) */
-.confirm-overlay{position:fixed;inset:0;z-index:50;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .2s ease}
-.confirm-overlay .scroll{padding-bottom:calc(100px + var(--safe))}
-.confirm-footer{position:fixed;bottom:0;left:0;right:0;padding:14px 16px;padding-bottom:calc(14px + var(--safe));background:rgba(20,50,32,.97);border-top:1px solid rgba(201,168,76,.15);display:flex;gap:10px;z-index:51}
+/* Confirm overlay */
+.overlay{position:fixed;inset:0;z-index:20;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .2s ease}
+.overlay-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:calc(12px + var(--safe));background:rgba(20,50,32,.97);border-top:1px solid rgba(201,168,76,.15);display:flex;gap:10px;z-index:21}
+.confirm-card{background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.confirm-cat{flex:1}
+.confirm-cat-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:4px}
+.confirm-cat-sel{font-size:16px;font-weight:500}
+.confirm-cat-mult{font-size:12px;color:rgba(245,240,232,.4);margin-top:2px}
+.confirm-amt{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)}
 
-/* FELT / WAITING SCREEN */
-.felt-screen{position:fixed;inset:0;z-index:40;background:var(--felt);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .3s ease}
-.felt-screen::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none}
-.felt-header{padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;z-index:1}
-.felt-content{flex:1;padding:16px;position:relative;z-index:1;overflow-y:auto}
-/* bet card on felt */
-.felt-bet-card{background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:14px;margin-bottom:10px}
-.felt-cat-name{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,168,76,.5);margin-bottom:6px}
-.felt-cat-sel{font-size:17px;font-weight:500;color:var(--cream);margin-bottom:4px}
+/* Felt waiting */
+.felt-view{background:var(--felt);position:relative}
+.felt-view::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none;z-index:0}
+.felt-view .p-view{position:relative;z-index:1}
+.felt-bet-card{background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:14px;margin-bottom:10px}
+.felt-cat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,168,76,.45);margin-bottom:5px}
+.felt-cat-sel{font-size:17px;font-weight:500;margin-bottom:3px}
 .felt-cat-amt{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold)}
-/* others on felt */
-.others-felt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px;margin-bottom:14px}
-.others-felt-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,.3);margin-bottom:10px}
-.other-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.others-panel{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px;margin-top:16px}
+.others-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,.3);margin-bottom:10px}
+.other-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .other-row:last-child{border-bottom:none}
 .other-name{font-size:13px;width:72px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.other-chips-list{flex:1;display:flex;flex-wrap:wrap;gap:4px}
-.other-chip-tag{font-size:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;color:rgba(245,240,232,.55)}
+.other-tags{flex:1;display:flex;flex-wrap:wrap;gap:4px}
+.other-tag{font-size:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;color:rgba(245,240,232,.55)}
 
-/* RESULT ANIMATION SCREEN */
-.result-screen{position:fixed;inset:0;z-index:60;background:var(--felt);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .3s ease}
-.result-screen::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none}
-.result-wine-title{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);text-align:center;margin-bottom:4px}
-.result-cards-wrap{width:100%;padding:0 16px;position:relative;z-index:1}
-.result-cat-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;animation:cardIn .4s ease both}
-@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.result-cat-card.win{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.35)}
-.result-cat-card.lose{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25)}
-.result-cat-card.nobet{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07)}
-.result-cat-icon{font-size:28px;flex-shrink:0}
-.result-cat-info{flex:1}
-.result-cat-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:3px}
-.result-cat-answer{font-size:16px;font-weight:500}
-.result-cat-yours{font-size:12px;color:rgba(245,240,232,.4);margin-top:2px}
-.result-cat-earn{font-family:'Cormorant Garamond',serif;font-size:24px;text-align:right}
-.result-cat-earn.win{color:#2ecc71}
-.result-cat-earn.lose{color:#e74c3c}
-/* flying chips animation */
-.chip-fly{position:fixed;font-size:24px;pointer-events:none;z-index:100;animation:chipFly 1.2s ease-out forwards}
-@keyframes chipFly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.3)}}
-/* total earned */
-.total-earned{text-align:center;padding:20px;position:relative;z-index:1}
-.total-earned-num{font-family:'Cormorant Garamond',serif;font-size:56px;color:var(--gold);animation:popIn .5s .8s cubic-bezier(.34,1.56,.64,1) both}
-@keyframes popIn{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+/* Result view */
+.result-view{background:var(--felt);position:relative}
+.result-view::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none;z-index:0}
+.result-view .p-view{position:relative;z-index:1}
+.result-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;animation:cardIn .35s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.result-card.win{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.35)}
+.result-card.lose{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25)}
+.result-card.nobet{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07)}
+.result-icon{font-size:26px;flex-shrink:0}
+.result-info{flex:1}
+.result-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:3px}
+.result-ans{font-size:16px;font-weight:500}
+.result-yours{font-size:12px;color:rgba(245,240,232,.4);margin-top:2px}
+.result-earn{font-family:'Cormorant Garamond',serif;font-size:24px}
+.result-earn.win{color:#2ecc71}
+.result-earn.lose{color:#e74c3c}
+.total-box{text-align:center;padding:20px 0 8px}
+.total-num{font-family:'Cormorant Garamond',serif;font-size:52px;animation:pop .5s .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 
-/* LEADERBOARD FINAL */
+/* chip fly */
+.chip-fly{position:fixed;font-size:22px;pointer-events:none;z-index:100;animation:cfly 1.2s ease-out forwards}
+@keyframes cfly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
+
+/* Final */
 .lb{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.12);border-radius:14px;overflow:hidden}
 .lb-row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
 .lb-row:last-child{border-bottom:none}
 .lb-row.winner{background:rgba(201,168,76,.08);border-left:3px solid var(--gold)}
-.lb-row.me{background:rgba(201,168,76,.05)}
+.lb-row.me{background:rgba(201,168,76,.04)}
 .lb-rank{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,168,76,.3);width:22px}
 .lb-rank.top{color:var(--gold)}
 .lb-chips{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
-.winner-crown{font-size:40px;text-align:center;margin-bottom:8px;animation:bounce 1s ease infinite alternate}
+.crown{font-size:40px;text-align:center;margin-bottom:8px;animation:bounce .8s ease infinite alternate}
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 </style>
 </head>
@@ -204,7 +204,7 @@ input:focus{border-color:var(--gold)}
   </div>
 </div>
 
-<!-- HOST SETUP -->
+<!-- SETUP -->
 <div id="screen-setup" class="screen">
   <div class="page-header">
     <button class="back" onclick="go('screen-landing')">← Назад</button>
@@ -216,10 +216,10 @@ input:focus{border-color:var(--gold)}
     <div class="f-group">
       <div class="lbl" style="margin-bottom:8px">Стартовые фишки</div>
       <div class="pill-row" id="chips-pills">
-        <div class="pill" onclick="selPill(this,'chips',100)">100</div>
-        <div class="pill sel" onclick="selPill(this,'chips',200)">200</div>
-        <div class="pill" onclick="selPill(this,'chips',500)">500</div>
-        <div class="pill" onclick="selPill(this,'chips',1000)">1000</div>
+        <div class="pill" onclick="selPill(this,100)">100</div>
+        <div class="pill sel" onclick="selPill(this,200)">200</div>
+        <div class="pill" onclick="selPill(this,500)">500</div>
+        <div class="pill" onclick="selPill(this,1000)">1000</div>
       </div>
     </div>
     <div class="div"></div>
@@ -233,8 +233,8 @@ input:focus{border-color:var(--gold)}
   </div>
 </div>
 
-<!-- CATEGORIES EDITOR -->
-<div id="screen-setup-cats" class="screen">
+<!-- CATS EDITOR -->
+<div id="screen-cats" class="screen">
   <div class="page-header">
     <button class="back" onclick="go('screen-setup')">← Назад</button>
     <div class="page-title">Категории</div>
@@ -243,12 +243,12 @@ input:focus{border-color:var(--gold)}
 </div>
 
 <!-- WINE EDITOR -->
-<div id="screen-wine-editor" class="screen">
+<div id="screen-wine" class="screen">
   <div class="page-header">
-    <button class="back" onclick="saveWineAndBack()">← К списку</button>
-    <div class="page-title" id="wine-editor-title">Вино №1</div>
+    <button class="back" onclick="saveWineBack()">← К списку</button>
+    <div class="page-title" id="wine-title">Вино №1</div>
   </div>
-  <div class="scroll" id="wine-editor-body"></div>
+  <div class="scroll" id="wine-body"></div>
 </div>
 
 <!-- JOIN -->
@@ -275,17 +275,17 @@ input:focus{border-color:var(--gold)}
   </div>
   <div class="h-tabs">
     <div class="h-tab active" onclick="hTab('bets')">Ставки</div>
-    <div class="h-tab" onclick="hTab('reveal')">Ответы</div>
     <div class="h-tab" onclick="hTab('players')">Игроки</div>
   </div>
   <div class="h-content" id="h-content"></div>
   <div class="h-bottom">
-    <button class="btn-ghost" style="flex:1" id="h-next-btn" onclick="nextRound()">Следующее вино →</button>
-    <button class="btn-ghost" onclick="endGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.55);padding:12px 14px">Финал</button>
+    <button class="btn-ghost" style="flex:1" id="h-reveal-btn" onclick="revealRound()">🔓 Открыть ответы</button>
+    <button class="btn-ghost" style="flex:1" id="h-next-btn" onclick="nextRound()" disabled>Следующее вино →</button>
+    <button class="btn-ghost" onclick="endGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.55);padding:12px 10px">Финал</button>
   </div>
 </div>
 
-<!-- PLAYER GAME (base screen, overlays appear on top) -->
+<!-- PLAYER GAME -->
 <div id="screen-player" class="screen">
   <div class="p-header">
     <div class="p-name" id="p-name-hdr">Игрок</div>
@@ -297,167 +297,202 @@ input:focus{border-color:var(--gold)}
 <div class="toast" id="toast"></div>
 
 <script>
-const SUPA_URL='https://rxaeajvcxgcltfvarzau.supabase.co';
-const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YWVhanZjeGdjbHRmdmFyemF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNjQyMzMsImV4cCI6MjA5NDY0MDIzM30.v8eUv0EyCWIOfjrST7b7mVGADNCpLMIkHJTtRv4hdxo';
-const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const SB=supabase.createClient(
+  'https://rxaeajvcxgcltfvarzau.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YWVhanZjeGdjbHRmdmFyemF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNjQyMzMsImV4cCI6MjA5NDY0MDIzM30.v8eUv0EyCWIOfjrST7b7mVGADNCpLMIkHJTtRv4hdxo'
+);
 
-const DEFAULT_CATS=[
+/* ── DEFAULT DATA ── */
+const DEF_CATS=[
   {id:'region',name:'Часть света',mult:2,enabled:true,options:['Старый свет','Новый свет']},
   {id:'country',name:'Страна',mult:3,enabled:true,options:['Франция','Италия','Испания','Германия','Австрия','Португалия','Греция','Венгрия','Грузия','Молдова','Россия','Армения','Швейцария','Румыния','США','Чили','Аргентина','Австралия','Новая Зеландия','ЮАР','Уругвай','Бразилия']},
-  {id:'grape',name:'Сорт винограда',mult:2,enabled:true,options:['Каберне Совиньон','Мерло','Пино Нуар','Сира/Шираз','Санджовезе','Темпранильо','Зинфандель','Мальбек','Каберне Фран','Гренаш','Неббиоло','Барбера','Гаме','Шардоне','Совиньон Блан','Рислинг','Пино Гри','Гевюрцтраминер','Шенен Блан','Вионье','Мускат','Альбариньо','Вердехо','Грюнер Вельтлинер','Цимлянский Чёрный','Красностоп Золотовский','Кокур','Сибирьковый']},
+  {id:'grape',name:'Сорт винограда',mult:2,enabled:true,options:['Каберне Совиньон','Мерло','Пино Нуар','Сира/Шираз','Санджовезе','Темпранильо','Зинфандель','Мальбек','Каберне Фран','Гренаш','Неббиоло','Гаме','Шардоне','Совиньон Блан','Рислинг','Пино Гри','Гевюрцтраминер','Шенен Блан','Вионье','Мускат','Альбариньо','Грюнер Вельтлинер','Цимлянский Чёрный','Красностоп Золотовский','Кокур','Сибирьковый']},
   {id:'aging',name:'Выдержка',mult:2,enabled:true,options:['Без выдержки','Сталь','Дуб (новый)','Дуб (старый)','Амфора','Бочка б/у']},
   {id:'year',name:'Год урожая',mult:3,enabled:true,options:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023']}
 ];
 const FLAGS={'Франция':'fr','Италия':'it','Испания':'es','Германия':'de','Австрия':'at','Португалия':'pt','Греция':'gr','Венгрия':'hu','Грузия':'ge','Молдова':'md','Россия':'ru','Армения':'am','Швейцария':'ch','Румыния':'ro','США':'us','Чили':'cl','Аргентина':'ar','Австралия':'au','Новая Зеландия':'nz','ЮАР':'za','Уругвай':'uy','Бразилия':'br'};
 
-let ST={role:null,code:null,pid:null,pname:null,ch:null,htab:'bets',
-  cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),wines:[],chips:200,
-  editWineIdx:null,
-  betDraft:{},lastRound:0,readyForNext:false,
-  revSels:{}};
-let _chips=200;
+/* ── STATE ── */
+const S={
+  // setup
+  cats:JSON.parse(JSON.stringify(DEF_CATS)),
+  wines:[],startChips:200,editIdx:null,
+  // session
+  role:null,code:null,pid:null,ch:null,htab:'bets',
+  // player per-round
+  draft:{},        // {catId:{sel,amt}}
+  pview:'lobby',   // lobby|betting|confirm|waiting|result|final
+  curRound:0,      // round player is currently viewing
+};
 
-// ── NAV ──
+/* ── HELPERS ── */
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function selPill(el,g,v){document.querySelectorAll('#'+g+'-pills .pill').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');if(g==='chips')_chips=v}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function esc2(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function e2(s){return String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function selPill(el,v){document.querySelectorAll('#chips-pills .pill').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');S.startChips=v}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function avc(n){const c=['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];let h=0;for(const x of String(n))h=(h*31+x.charCodeAt(0))%c.length;return c[h]}
+function pl(n,a,b,c){if(n%10===1&&n%100!==11)return a;if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return b;return c}
+function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<6;i++)r+=c[~~(Math.random()*c.length)];return r}
+function genId(){return Math.random().toString(36).slice(2,11)}
 
-// ── CATS EDITOR ──
-function openCatsEditor(){renderCatsEditor();go('screen-setup-cats')}
-function renderCatsEditor(){
-  document.getElementById('cats-editor').innerHTML=ST.cats.map((cat,ci)=>`
+async function dbGet(){const{data}=await SB.from('sessions').select('*').eq('code',S.code).single();return data}
+async function dbUpd(obj){await SB.from('sessions').update(obj).eq('code',S.code)}
+
+/* ── CATS EDITOR ── */
+function openCatsEditor(){renderCats();go('screen-cats')}
+function renderCats(){
+  document.getElementById('cats-editor').innerHTML=S.cats.map((c,i)=>`
     <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px;margin-bottom:12px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <input type="text" value="${esc(cat.name)}" oninput="ST.cats[${ci}].name=this.value" style="flex:1;padding:10px 14px;font-size:14px;font-weight:500">
+        <input type="text" value="${esc(c.name)}" oninput="S.cats[${i}].name=this.value" style="flex:1;padding:10px 14px;font-size:14px;font-weight:500">
         <span style="font-size:12px;color:rgba(245,240,232,.4)">×</span>
-        <input type="number" value="${cat.mult}" min="1" max="10" oninput="ST.cats[${ci}].mult=+this.value" style="width:54px;text-align:center;padding:9px 8px">
+        <input type="number" value="${c.mult}" min="1" max="10" oninput="S.cats[${i}].mult=+this.value" style="width:54px;text-align:center;padding:9px 8px">
         <label style="display:flex;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;font-size:13px;color:rgba(245,240,232,.5)">
-          <input type="checkbox" ${cat.enabled?'checked':''} onchange="ST.cats[${ci}].enabled=this.checked" style="width:18px;height:18px;accent-color:var(--gold)"> Вкл
+          <input type="checkbox" ${c.enabled?'checked':''} onchange="S.cats[${i}].enabled=this.checked" style="width:18px;height:18px;accent-color:var(--gold)"> Вкл
         </label>
       </div>
-      <div class="tags-wrap">${cat.options.map((o,oi)=>`<span class="tag">${esc(o)}<span class="x" onclick="removeCatOpt(${ci},${oi})">×</span></span>`).join('')}</div>
+      <div class="tags-wrap">${c.options.map((o,j)=>`<span class="tag">${esc(o)}<span class="x" onclick="rmOpt(${i},${j})">×</span></span>`).join('')}</div>
       <div class="add-opt-row">
-        <input type="text" id="nopt-${ci}" placeholder="Добавить вариант..." style="font-size:14px;padding:10px 14px">
-        <button class="btn-sm" onclick="addCatOpt(${ci})">+</button>
+        <input type="text" id="nopt-${i}" placeholder="Добавить вариант..." style="font-size:14px;padding:10px 14px">
+        <button class="btn-sm" onclick="addOpt(${i})">+</button>
       </div>
     </div>`).join('')+`<button class="btn-sm" style="width:100%;padding:13px;margin-bottom:16px" onclick="addCat()">+ Добавить категорию</button>`;
 }
-function addCatOpt(ci){const inp=document.getElementById('nopt-'+ci);const v=inp.value.trim();if(!v)return;ST.cats[ci].options.push(v);inp.value='';renderCatsEditor()}
-function removeCatOpt(ci,oi){ST.cats[ci].options.splice(oi,1);renderCatsEditor()}
-function addCat(){ST.cats.push({id:'cat_'+Date.now(),name:'Новая категория',mult:2,enabled:true,options:[]});renderCatsEditor()}
+function addOpt(i){const inp=document.getElementById('nopt-'+i);const v=inp.value.trim();if(!v)return;S.cats[i].options.push(v);inp.value='';renderCats()}
+function rmOpt(i,j){S.cats[i].options.splice(j,1);renderCats()}
+function addCat(){S.cats.push({id:'cat_'+Date.now(),name:'Новая категория',mult:2,enabled:true,options:[]});renderCats()}
 
-// ── WINES ──
-function addWine(){const idx=ST.wines.length;ST.wines.push({id:'w'+Date.now(),name:'Вино №'+(idx+1),answers:{}});renderWinesList();openWineEditor(idx)}
-function removeWine(idx){ST.wines.splice(idx,1);renderWinesList()}
-function renderWinesList(){
-  const eCats=ST.cats.filter(c=>c.enabled);
-  document.getElementById('wines-list').innerHTML=ST.wines.map((w,i)=>{
-    const chips=eCats.map(cat=>`<span class="answer-chip ${w.answers[cat.id]?'set':''}">${esc(cat.name)}: ${esc(w.answers[cat.id]||'—')}</span>`).join('');
+/* ── WINES ── */
+function addWine(){const i=S.wines.length;S.wines.push({id:'w'+Date.now(),name:'Вино №'+(i+1),answers:{}});renderWines();openWine(i)}
+function rmWine(i){S.wines.splice(i,1);renderWines()}
+function renderWines(){
+  const ec=S.cats.filter(c=>c.enabled);
+  document.getElementById('wines-list').innerHTML=S.wines.map((w,i)=>{
+    const chips=ec.map(c=>`<span class="answer-chip ${w.answers[c.id]?'set':''}">${esc(c.name)}: ${esc(w.answers[c.id]||'—')}</span>`).join('');
     return`<div class="wine-item">
-      <div class="wine-item-head" onclick="openWineEditor(${i})">
+      <div class="wine-item-head" onclick="openWine(${i})">
         <div class="wine-num-badge">${i+1}</div>
         <div style="flex:1;font-size:15px;font-weight:500">${esc(w.name)}</div>
-        <button class="btn-danger" onclick="event.stopPropagation();removeWine(${i})">✕</button>
+        <button class="btn-danger" onclick="event.stopPropagation();rmWine(${i})">✕</button>
         <span style="font-size:18px;color:rgba(201,168,76,.4)">›</span>
       </div>
       <div class="wine-answers">${chips}</div>
     </div>`;
   }).join('')||'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3);font-size:14px">Нажмите «+ Добавить вино»</div>';
-  const allFilled=ST.wines.length>0&&ST.wines.every(w=>ST.cats.filter(c=>c.enabled).every(cat=>w.answers[cat.id]));
-  document.getElementById('start-btn').disabled=!allFilled;
+  const ok=S.wines.length>0&&S.wines.every(w=>S.cats.filter(c=>c.enabled).every(c=>w.answers[c.id]));
+  document.getElementById('start-btn').disabled=!ok;
 }
-function openWineEditor(idx){
-  ST.editWineIdx=idx;
-  document.getElementById('wine-editor-title').textContent='Вино №'+(idx+1);
-  renderWineEditor();go('screen-wine-editor');
+function openWine(i){
+  S.editIdx=i;
+  document.getElementById('wine-title').textContent='Вино №'+(i+1);
+  renderWineEditor();go('screen-wine');
 }
 function renderWineEditor(){
-  const idx=ST.editWineIdx,w=ST.wines[idx],eCats=ST.cats.filter(c=>c.enabled);
-  document.getElementById('wine-editor-body').innerHTML=`
-    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Название</div><input type="text" value="${esc(w.name)}" oninput="ST.wines[${idx}].name=this.value"></div>
+  const w=S.wines[S.editIdx],ec=S.cats.filter(c=>c.enabled);
+  document.getElementById('wine-body').innerHTML=`
+    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Название</div><input type="text" value="${esc(w.name)}" oninput="S.wines[${S.editIdx}].name=this.value"></div>
     <div class="div"></div>
     <div class="lbl" style="margin-bottom:14px">Правильные ответы</div>
-    ${eCats.map(cat=>`
+    ${ec.map(c=>`
       <div style="margin-bottom:18px">
-        <div style="font-size:14px;font-weight:500;margin-bottom:8px">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
+        <div style="font-size:14px;font-weight:500;margin-bottom:8px">${esc(c.name)} <span class="mult">×${c.mult}</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:7px">
-          ${cat.options.map(opt=>`<div class="rev-opt ${w.answers[cat.id]===opt?'sel':''}" onclick="setWineAnswer('${cat.id}','${esc2(opt)}')">${esc(opt)}</div>`).join('')}
+          ${c.options.map(o=>`<div class="rev-opt ${w.answers[c.id]===o?'sel':''}" onclick="setAns('${e2(c.id)}','${e2(o)}')">${esc(o)}</div>`).join('')}
         </div>
       </div><div class="div"></div>`).join('')}
-    <button class="btn-gold" onclick="saveWineAndBack()">Сохранить →</button>`;
+    <button class="btn-gold" onclick="saveWineBack()">Сохранить →</button>`;
 }
-function setWineAnswer(catId,val){ST.wines[ST.editWineIdx].answers[catId]=val;renderWineEditor()}
-function saveWineAndBack(){go('screen-setup');renderWinesList()}
+function setAns(cid,val){S.wines[S.editIdx].answers[cid]=val;renderWineEditor()}
+function saveWineBack(){go('screen-setup');renderWines()}
 
-// ── CREATE SESSION ──
+/* ── CREATE SESSION ── */
 async function createSession(){
   const name=document.getElementById('sess-name').value.trim()||'Wine Casino';
   const code=genCode();
-  const{error}=await sb.from('sessions').insert({
-    code,name,cats:ST.cats.filter(c=>c.enabled),wines:ST.wines,
-    start_chips:_chips,current_round:1,phase:'betting',
-    players:{},bets:{},revealed:{}
+  const{error}=await SB.from('sessions').insert({
+    code,name,
+    cats:S.cats.filter(c=>c.enabled),
+    wines:S.wines,
+    start_chips:S.startChips,
+    current_round:1,
+    phase:'betting',   // betting | revealed | finished
+    players:{},
+    bets:{},           // {round:{pid:{catId:{sel,amt}}}}
+    revealed:{}        // {round:true}  — flag: all answers revealed for round
   });
   if(error){toast('Ошибка: '+error.message);return}
-  ST.role='host';ST.code=code;
+  S.role='host';S.code=code;
   document.getElementById('h-code').textContent=code;
-  go('screen-host');subHost();await refreshHost();
+  go('screen-host');
+  subHost();
+  await refreshHost();
 }
 
-// ── JOIN ──
+/* ── JOIN ── */
 async function joinSession(){
   const code=document.getElementById('join-code').value.trim().toUpperCase();
   const name=document.getElementById('join-name').value.trim();
   if(code.length<4){toast('Введи код');return}
   if(!name){toast('Введи имя');return}
-  const{data:sess,error}=await sb.from('sessions').select('*').eq('code',code).single();
+  const{data:sess,error}=await SB.from('sessions').select('*').eq('code',code).single();
   if(error||!sess){toast('Сессия не найдена');return}
   if(sess.phase==='finished'){toast('Игра завершена');return}
   const pid=genId();
-  const players=sess.players||{};
-  players[pid]={name,chips:sess.start_chips};
-  await sb.from('sessions').update({players}).eq('code',code);
-  ST.role='player';ST.code=code;ST.pid=pid;ST.pname=name;ST.betDraft={};ST.lastRound=0;
+  const players={...sess.players,[pid]:{name,chips:sess.start_chips}};
+  await SB.from('sessions').update({players}).eq('code',code);
+  S.role='player';S.code=code;S.pid=pid;S.draft={};S.curRound=0;
   document.getElementById('p-name-hdr').textContent=name;
-  go('screen-player');subPlayer();renderPlayer(sess);
+  go('screen-player');
+  subPlayer();
+  drawPlayer(sess);
 }
 
-// ── REALTIME ──
+/* ── REALTIME ── */
 function subHost(){
-  if(ST.ch)sb.removeChannel(ST.ch);
-  ST.ch=sb.channel('h_'+ST.code).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+ST.code},p=>refreshHost(p.new)).subscribe();
+  if(S.ch)SB.removeChannel(S.ch);
+  S.ch=SB.channel('h_'+S.code)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+S.code},p=>refreshHost(p.new))
+    .subscribe();
 }
 function subPlayer(){
-  if(ST.ch)sb.removeChannel(ST.ch);
-  ST.ch=sb.channel('p_'+ST.code+'_'+ST.pid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+ST.code},p=>renderPlayer(p.new)).subscribe();
+  if(S.ch)SB.removeChannel(S.ch);
+  S.ch=SB.channel('p_'+S.code+'_'+S.pid)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+S.code},p=>drawPlayer(p.new))
+    .subscribe();
 }
 
-// ── HOST ──
+/* ══════════════════════════════════════════
+   HOST
+══════════════════════════════════════════ */
 async function refreshHost(sess){
-  if(!sess){const{data}=await sb.from('sessions').select('*').eq('code',ST.code).single();sess=data}
+  if(!sess)sess=await dbGet();
   if(!sess)return;
-  document.getElementById('h-round-pill').textContent='Вино '+sess.current_round+'/'+sess.wines.length;
-  document.getElementById('h-next-btn').textContent=sess.current_round>=sess.wines.length?'Завершить игру →':'Следующее вино →';
-  renderHostTab(sess);
+  const r=sess.current_round,total=sess.wines.length;
+  document.getElementById('h-round-pill').textContent='Вино '+r+'/'+total;
+  const isRevealed=!!(sess.revealed||{})[r];
+  document.getElementById('h-reveal-btn').disabled=isRevealed;
+  document.getElementById('h-next-btn').disabled=!isRevealed;
+  document.getElementById('h-next-btn').textContent=r>=total?'Завершить игру →':'Следующее вино →';
+  renderHTab(sess);
 }
+
 function hTab(t){
-  ST.htab=t;
+  S.htab=t;
   document.querySelectorAll('.h-tab').forEach(el=>el.classList.toggle('active',el.getAttribute('onclick')==="hTab('"+t+"')"));
-  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data)renderHostTab(data)});
+  dbGet().then(sess=>{if(sess)renderHTab(sess)});
 }
-function renderHostTab(sess){
-  const el=document.getElementById('h-content');
-  if(ST.htab==='bets')el.innerHTML=hostBetsHTML(sess);
-  else if(ST.htab==='reveal')el.innerHTML=hostRevealHTML(sess);
-  else el.innerHTML=hostPlayersHTML(sess);
-  if(ST.htab==='reveal')attachRevealHandlers(sess);
+
+function renderHTab(sess){
+  document.getElementById('h-content').innerHTML=S.htab==='bets'?hBetsHTML(sess):hPlayersHTML(sess);
 }
-function hostBetsHTML(sess){
-  const r=sess.current_round,bets=(sess.bets||{})[r]||{},players=sess.players||{},cats=sess.cats||[],revealed=(sess.revealed||{})[r]||{};
+
+function hBetsHTML(sess){
+  const r=sess.current_round,bets=(sess.bets||{})[r]||{},players=sess.players||{},cats=sess.cats||[];
   const wine=sess.wines[r-1];
+  const isRevealed=!!(sess.revealed||{})[r];
   let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:2px">${esc(wine?.name||'Вино №'+r)}</div>
-    <div class="lbl" style="margin-bottom:12px">Ставки: ${Object.keys(bets).length} из ${Object.keys(players).length}</div>
+    <div class="lbl" style="margin-bottom:12px">${isRevealed?'✓ Ответы открыты':'Ставки: '+Object.keys(bets).length+' из '+Object.keys(players).length}</div>
     <div style="overflow-x:auto"><table class="bets-table"><thead><tr><th>Игрок</th><th>🪙</th>`;
   cats.forEach(c=>h+=`<th>${esc(c.name)} <span class="mult">×${c.mult}</span></th>`);
   h+='</tr></thead><tbody>';
@@ -465,490 +500,415 @@ function hostBetsHTML(sess){
     const pb=bets[pid]||{};
     h+=`<tr><td style="font-size:13px;white-space:nowrap">${esc(p.name)}</td><td style="font-family:'Cormorant Garamond',serif;color:var(--gold)">${p.chips}</td>`;
     cats.forEach(cat=>{
-      const bet=pb[cat.id],ans=revealed[cat.id];
+      const bet=pb[cat.id];
       if(!bet){h+=`<td style="color:rgba(245,240,232,.2)">—</td>`;return}
-      const mark=ans?(bet.sel===ans?'<span style="color:#2ecc71"> ✓</span>':'<span style="color:#e74c3c"> ✗</span>'):'';
-      h+=`<td><div style="font-size:12px">${esc(bet.sel)}${mark}</div><div style="font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--gold)">🪙${bet.amt}</div></td>`;
+      let mark='';
+      if(isRevealed){
+        const ans=wine.answers[cat.id];
+        mark=bet.sel===ans?'<span style="color:#2ecc71"> ✓</span>':'<span style="color:#e74c3c"> ✗</span>';
+      }
+      h+=`<td><div style="font-size:12px">${esc(bet.sel)}${mark}</div><div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold)">🪙${bet.amt}</div></td>`;
     });
     h+='</tr>';
   });
   return h+'</tbody></table></div>';
 }
-function hostRevealHTML(sess){
-  const r=sess.current_round,wine=sess.wines[r-1],cats=sess.cats||[],revealed=(sess.revealed||{})[r]||{};
-  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gl);margin-bottom:16px">${esc(wine?.name||'Вино №'+r)}</div>`;
-  cats.forEach(cat=>{
-    const ans=revealed[cat.id];
-    h+=`<div class="reveal-cat"><div class="reveal-cat-lbl">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>`;
-    if(ans){
-      h+=`<div style="color:var(--gl);font-size:14px">✓ ${esc(ans)}</div>`;
-    } else {
-      h+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px" data-cat="${cat.id}">${cat.options.map(o=>`<div class="rev-opt" data-l="${esc2(o)}">${esc(o)}</div>`).join('')}</div>
-        <button class="btn-sm" onclick="revealCat('${cat.id}')">Открыть ответ</button>`;
-    }
-    h+=`</div><div class="div"></div>`;
-  });
-  return h;
-}
-function attachRevealHandlers(sess){
-  const r=sess.current_round,revealed=(sess.revealed||{})[r]||{};
-  document.querySelectorAll('[data-cat]').forEach(container=>{
-    const catId=container.dataset.cat;
-    if(!catId||revealed[catId])return;
-    container.querySelectorAll('.rev-opt').forEach(btn=>{
-      btn.onclick=()=>{container.querySelectorAll('.rev-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');ST.revSels[catId]=btn.dataset.l};
-    });
-  });
-}
-async function revealCat(catId){
-  const sel=ST.revSels[catId];if(!sel){toast('Выбери правильный ответ');return}
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
-  const r=sess.current_round,revealed=sess.revealed||{};
-  if(!revealed[r])revealed[r]={};
-  revealed[r][catId]=sel;
-  const players=sess.players||{},bets=(sess.bets||{})[r]||{};
-  const cat=(sess.cats||[]).find(c=>c.id===catId),mult=cat?.mult||2;
-  Object.entries(bets).forEach(([pid,pb])=>{
-    const bet=pb[catId];
-    if(bet&&players[pid]&&bet.sel===sel)players[pid].chips+=bet.amt*mult;
-  });
-  await sb.from('sessions').update({revealed,players}).eq('code',ST.code);
-  delete ST.revSels[catId];
-  toast('✓ '+esc(cat?.name)+': '+esc(sel)+' (×'+mult+')');
-}
-function hostPlayersHTML(sess){
-  const players=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  if(!players.length)return'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
-  return'<div>'+players.map(([id,p],i)=>`<div class="player-row">
+
+function hPlayersHTML(sess){
+  const pl=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
+  if(!pl.length)return'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
+  return'<div>'+pl.map(([id,p],i)=>`<div class="player-row">
     <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,168,76,.3);width:20px">${i+1}</div>
     <div class="avatar" style="background:${avc(p.name)}">${p.name[0].toUpperCase()}</div>
     <div style="flex:1;font-size:15px">${esc(p.name)}</div>
     <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">🪙 ${p.chips}</div>
   </div>`).join('')+'</div>';
 }
-async function nextRound(){
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
-  if(sess.current_round>=sess.wines.length){endGame();return}
-  ST.revSels={};
-  await sb.from('sessions').update({current_round:sess.current_round+1,phase:'betting'}).eq('code',ST.code);
+
+/* HOST ACTIONS */
+async function revealRound(){
+  // Ответы уже заданы до игры — просто помечаем раунд как revealed и начисляем фишки
+  const sess=await dbGet();if(!sess)return;
+  const r=sess.current_round,wine=sess.wines[r-1],cats=sess.cats||[];
+  const players={...sess.players};
+  const bets=(sess.bets||{})[r]||{};
+  // Settle bets
+  Object.entries(bets).forEach(([pid,pb])=>{
+    if(!players[pid])return;
+    cats.forEach(cat=>{
+      const bet=pb[cat.id];if(!bet)return;
+      if(bet.sel===wine.answers[cat.id]){
+        players[pid].chips+=bet.amt*cat.mult; // return stake × mult
+      }
+      // lost bets are already deducted when placed — nothing to do
+    });
+  });
+  const revealed={...sess.revealed,[r]:true};
+  await dbUpd({players,revealed,phase:'revealed'});
+  toast('✓ Ответы открыты, фишки начислены');
 }
+
+async function nextRound(){
+  const sess=await dbGet();if(!sess)return;
+  if(sess.current_round>=sess.wines.length){endGame();return}
+  await dbUpd({current_round:sess.current_round+1,phase:'betting'});
+}
+
 async function endGame(){
-  await sb.from('sessions').update({phase:'finished'}).eq('code',ST.code);
+  await dbUpd({phase:'finished'});
   toast('🏆 Игра завершена!');
 }
-async function copyCode(){try{await navigator.clipboard.writeText(ST.code)}catch(e){}toast('Код: '+ST.code)}
 
-// ══════════════════════════════════════════════
-//  PLAYER UI  — overlays stacked on top of base screen
-// ══════════════════════════════════════════════
-let playerOverlay=null; // current overlay element
-
-function removeOverlay(){
-  if(playerOverlay){playerOverlay.remove();playerOverlay=null}
+async function copyCode(){
+  try{await navigator.clipboard.writeText(S.code)}catch(e){}
+  toast('Код: '+S.code);
 }
 
-function showOverlay(html,cls='confirm-overlay'){
-  removeOverlay();
-  const el=document.createElement('div');
-  el.className=cls;
-  el.innerHTML=html;
-  document.body.appendChild(el);
-  playerOverlay=el;
-  return el;
-}
-
-function renderPlayer(sess){
+/* ══════════════════════════════════════════
+   PLAYER
+══════════════════════════════════════════ */
+function drawPlayer(sess){
   if(!sess)return;
-  const me=(sess.players||{})[ST.pid];
+  const me=(sess.players||{})[S.pid];
   if(me)document.getElementById('p-chips-hdr').textContent=me.chips;
   const r=sess.current_round;
+  const myBets=((sess.bets||{})[r]||{})[S.pid]||null;
+  const isRevealed=!!(sess.revealed||{})[r];
 
-  if(sess.phase==='finished'){
-    removeOverlay();
-    document.getElementById('p-content').innerHTML='';
-    showFinalScreen(sess);
+  if(sess.phase==='finished'){pView(finalHTML(sess));pClass('');return}
+
+  // New round started — reset draft and redraw
+  if(r!==S.curRound){
+    S.draft={};
+    S.curRound=r;
+    S.pview='betting';
+    // remove any lingering confirm overlay
+    const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
+  }
+
+  // Override view based on server state
+  if(isRevealed&&myBets){
+    if(S.pview!=='result'){S.pview='result';showResult(sess,myBets,r,me)}
+    else updateResult(sess,myBets,r,me);
     return;
   }
-
-  // Round changed — only proceed if player pressed "ready"
-  if(r!==ST.lastRound){
-    // If result screen is showing, wait for player to press ready
-    const rs=document.getElementById('result-screen-id');
-    if(rs)return; // still on previous result screen — don't auto-advance
-    ST.betDraft={};
-    ST.lastRound=r;
-    ST.readyForNext=false;
-    removeOverlay();
-  }
-
-  const myBets=((sess.bets||{})[r]||{})[ST.pid]||null;
-  const revealed=(sess.revealed||{})[r]||{};
-  const hasAnyReveal=Object.keys(revealed).length>0;
-
-  // Results available — show or update result screen
-  if(myBets&&hasAnyReveal){
-    const existingResult=document.getElementById('result-screen-id');
-    if(!existingResult){
-      showResultScreen(sess,myBets,revealed,r,me);
-    } else {
-      updateResultScreen(sess,myBets,revealed,r,me);
-    }
+  if(isRevealed&&!myBets){
+    // Revealed but player never bet — show result with no-bets
+    if(S.pview!=='result'){S.pview='result';showResult(sess,myBets,r,me)}
     return;
   }
-
-  // Bets confirmed, waiting for reveal — show felt screen
-  if(myBets){
-    const existingFelt=document.getElementById('felt-screen-id');
-    if(!existingFelt||!playerOverlay){
-      showFeltScreen(sess,myBets,r,me);
-    } else {
-      updateFeltOthers(sess,r);
-    }
+  if(myBets&&!isRevealed){
+    // Bets confirmed, waiting
+    if(S.pview!=='waiting'){S.pview='waiting';showWaiting(sess,myBets,r)}
+    else refreshWaitingOthers(sess,r);
     return;
   }
-
-  // Confirm screen open — don't touch
-  const existingConfirm=document.getElementById('confirm-screen-id');
-  if(existingConfirm)return;
-  renderBettingUI(sess,me,r);
+  // Betting phase — only render if not on confirm screen
+  if(S.pview==='confirm')return;
+  if(S.pview!=='betting'){S.pview='betting'}
+  showBetting(sess,me,r);
 }
 
-function renderBettingUI(sess,me,r){
-  removeOverlay();
+/* ── PLAYER VIEWS ── */
+function pView(html,extraClass=''){
+  const el=document.getElementById('p-content');
+  el.className='p-content';
+  if(extraClass)el.classList.add(extraClass);
+  el.innerHTML=`<div class="p-view">${html}</div>`;
+}
+function pClass(cls){document.getElementById('p-content').className='p-content'+(cls?' '+cls:'')}
+
+function showBetting(sess,me,r){
   const cats=sess.cats||[],wine=sess.wines[r-1];
-  let html=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:4px">${esc(wine?.name||'Вино №'+r)}</div>
-    <div class="lbl" style="margin-bottom:16px">Раунд ${r} из ${sess.wines.length} · Делайте ставки</div>`;
+  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:4px">${esc(wine?.name||'Вино №'+r)}</div>
+    <div class="lbl" style="margin-bottom:16px">Раунд ${r} из ${sess.wines.length}</div>`;
   cats.forEach(cat=>{
-    const bs=ST.betDraft[cat.id]||{sel:null,amt:0};
-    html+=`<div class="cat-block ${bs.sel?'done':''}" id="cb-${cat.id}">
+    const bs=S.draft[cat.id]||{sel:null,amt:0};
+    h+=`<div class="cat-block${bs.sel?' done':''}" id="cb-${cat.id}">
       <div class="cat-block-head">
-        <div class="cat-block-title">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)" id="cbh-${cat.id}">${bs.sel?'🪙'+bs.amt:'—'}</div>
+        <div class="cat-title">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
+        <div id="cbv-${cat.id}" style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">${bs.sel?'🪙'+bs.amt:'—'}</div>
       </div>
       <div class="opts-grid">
-        ${cat.options.map(o=>{const f=FLAGS[o];return`<div class="opt ${bs.sel===o?'sel':''}" data-cat="${cat.id}" data-opt="${esc2(o)}">${f?`<img src="https://flagcdn.com/w40/${f}.png" alt="">`:''} ${esc(o)}</div>`}).join('')}
+        ${cat.options.map(o=>{const f=FLAGS[o];return`<div class="opt${bs.sel===o?' sel':''}" data-c="${e2(cat.id)}" data-o="${e2(o)}">${f?`<img src="https://flagcdn.com/w40/${f}.png" alt="">`:''} ${esc(o)}</div>`}).join('')}
       </div>
       <div class="chips-row">
-        <div class="chip c1" data-cat="${cat.id}" data-v="1">1</div>
-        <div class="chip c5" data-cat="${cat.id}" data-v="5">5</div>
-        <div class="chip c10" data-cat="${cat.id}" data-v="10">10</div>
-        <div class="chip c25" data-cat="${cat.id}" data-v="25">25</div>
-        <div class="chip c50" data-cat="${cat.id}" data-v="50">50</div>
+        <div class="chip c1" data-c="${cat.id}" data-v="1">1</div>
+        <div class="chip c5" data-c="${cat.id}" data-v="5">5</div>
+        <div class="chip c10" data-c="${cat.id}" data-v="10">10</div>
+        <div class="chip c25" data-c="${cat.id}" data-v="25">25</div>
+        <div class="chip c50" data-c="${cat.id}" data-v="50">50</div>
       </div>
-      <div class="chip-row-bottom">
-        <div class="stake-display" id="sd-${cat.id}">🪙${bs.amt}</div>
-        <button class="btn-clr" onclick="clearDraft('${cat.id}')">Сброс</button>
+      <div class="chip-foot">
+        <div class="stake-disp" id="sd-${cat.id}">🪙${bs.amt}</div>
+        <button class="btn-clr" onclick="clearDraft('${e2(cat.id)}')">Сброс</button>
       </div>
     </div>`;
   });
-  html+=`<button class="btn-gold" id="p-confirm-btn" onclick="openConfirmScreen()" disabled style="margin-top:4px">Поставить →</button>`;
-  document.getElementById('p-content').innerHTML=html;
-  // attach handlers
+  h+=`<button class="btn-gold" id="p-place-btn" onclick="openConfirm()" style="margin-top:4px" disabled>Поставить →</button>`;
+  pView(h);
+  // handlers
   document.querySelectorAll('.opt').forEach(el=>{
-    el.addEventListener('click',()=>{
-      const catId=el.dataset.cat,opt=el.dataset.opt;
-      if(!ST.betDraft[catId])ST.betDraft[catId]={sel:null,amt:0};
-      ST.betDraft[catId].sel=opt;
-      document.querySelectorAll('.opt[data-cat="'+catId+'"]').forEach(o=>o.classList.toggle('sel',o.dataset.opt===opt));
-      refreshCatBlock(catId,me);
-    });
+    el.onclick=()=>{
+      const cid=el.dataset.c,o=el.dataset.o;
+      if(!S.draft[cid])S.draft[cid]={sel:null,amt:0};
+      S.draft[cid].sel=o;
+      document.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(x=>x.classList.toggle('sel',x.dataset.o===o));
+      updCB(cid);
+    };
   });
   document.querySelectorAll('.chip').forEach(el=>{
-    el.addEventListener('click',()=>{
-      const catId=el.dataset.cat,v=+el.dataset.v;
-      if(!ST.betDraft[catId])ST.betDraft[catId]={sel:null,amt:0};
+    el.onclick=()=>{
+      const cid=el.dataset.c,v=+el.dataset.v;
+      if(!S.draft[cid])S.draft[cid]={sel:null,amt:0};
       const myChips=me?me.chips:0;
-      const spent=Object.values(ST.betDraft).reduce((s,b)=>s+(b.amt||0),0);
-      const thisCat=ST.betDraft[catId].amt||0;
-      if(thisCat+v+(spent-thisCat)>myChips){toast('Недостаточно фишек');return}
-      ST.betDraft[catId].amt+=v;
-      refreshCatBlock(catId,me);
-    });
+      const totalDraft=Object.values(S.draft).reduce((s,b)=>s+(b.amt||0),0);
+      const thisDraft=S.draft[cid].amt||0;
+      if(thisDraft+v+(totalDraft-thisDraft)>myChips){toast('Недостаточно фишек');return}
+      S.draft[cid].amt+=v;
+      updCB(cid);
+    };
   });
-  checkConfirmBtn();
+  updPlaceBtn();
 }
 
-function refreshCatBlock(catId,me){
-  const bs=ST.betDraft[catId]||{sel:null,amt:0};
-  const sdEl=document.getElementById('sd-'+catId);
-  if(sdEl)sdEl.textContent='🪙'+bs.amt;
-  const cbhEl=document.getElementById('cbh-'+catId);
-  if(cbhEl)cbhEl.textContent=bs.sel?'🪙'+bs.amt:'—';
-  const cbEl=document.getElementById('cb-'+catId);
-  if(cbEl)cbEl.classList.toggle('done',!!bs.sel);
-  checkConfirmBtn();
+function updCB(cid){
+  const bs=S.draft[cid]||{sel:null,amt:0};
+  const sd=document.getElementById('sd-'+cid);if(sd)sd.textContent='🪙'+bs.amt;
+  const cbv=document.getElementById('cbv-'+cid);if(cbv)cbv.textContent=bs.sel?'🪙'+bs.amt:'—';
+  const cb=document.getElementById('cb-'+cid);if(cb)cb.classList.toggle('done',!!bs.sel);
+  updPlaceBtn();
+}
+function updPlaceBtn(){
+  const btn=document.getElementById('p-place-btn');
+  if(btn)btn.disabled=!Object.values(S.draft).some(b=>b.sel&&b.amt>0);
+}
+function clearDraft(cid){
+  S.draft[cid]={sel:null,amt:0};
+  dbGet().then(sess=>{if(sess)showBetting(sess,(sess.players||{})[S.pid],sess.current_round)});
 }
 
-function checkConfirmBtn(){
-  const btn=document.getElementById('p-confirm-btn');
-  if(!btn)return;
-  const anyBet=Object.values(ST.betDraft).some(b=>b.sel&&b.amt>0);
-  btn.disabled=!anyBet;
-}
-
-function clearDraft(catId){
-  ST.betDraft[catId]={sel:null,amt:0};
-  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data){const me=(data.players||{})[ST.pid];renderBettingUI(data,me,data.current_round)}});
-}
-
-// ── CONFIRM SCREEN ──
-function openConfirmScreen(){
-  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data:sess})=>{
+/* ── CONFIRM OVERLAY ── */
+function openConfirm(){
+  S.pview='confirm';
+  dbGet().then(sess=>{
     if(!sess)return;
-    const me=(sess.players||{})[ST.pid];
-    const cats=sess.cats||[];
-    const bets=Object.entries(ST.betDraft).filter(([,b])=>b.sel&&b.amt>0);
-    const totalAmt=bets.reduce((s,[,b])=>s+b.amt,0);
-    let cardsHtml=bets.map(([catId,b])=>{
-      const cat=cats.find(c=>c.id===catId);
-      return`<div style="background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px">
-        <div style="flex:1">
-          <div class="lbl" style="margin-bottom:4px">${esc(cat?.name||catId)}</div>
-          <div style="font-size:17px;font-weight:500">${esc(b.sel)}</div>
-          <div style="font-size:12px;color:rgba(245,240,232,.4);margin-top:2px">×${cat?.mult||2} при угадывании</div>
+    const cats=sess.cats||[],r=sess.current_round,wine=sess.wines[r-1];
+    const bets=Object.entries(S.draft).filter(([,b])=>b.sel&&b.amt>0);
+    const total=bets.reduce((s,[,b])=>s+b.amt,0);
+    const cards=bets.map(([cid,b])=>{
+      const cat=cats.find(c=>c.id===cid);
+      return`<div class="confirm-card">
+        <div class="confirm-cat">
+          <div class="confirm-cat-lbl">${esc(cat?.name||cid)}</div>
+          <div class="confirm-cat-sel">${esc(b.sel)}</div>
+          <div class="confirm-cat-mult">×${cat?.mult||2} при угадывании</div>
         </div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)">🪙${b.amt}</div>
+        <div class="confirm-amt">🪙${b.amt}</div>
       </div>`;
     }).join('');
-    const r=sess.current_round,wine=sess.wines[r-1];
-    const html=`
+    // Inject overlay into p-content
+    const el=document.getElementById('p-content');
+    const ov=document.createElement('div');
+    ov.id='confirm-ov';
+    ov.className='overlay';
+    ov.innerHTML=`
       <div class="page-header">
-        <button class="back" onclick="closeConfirmScreen()">← Изменить</button>
+        <button class="back" onclick="closeConfirm()">← Изменить</button>
         <div class="page-title">${esc(wine?.name||'Вино №'+r)}</div>
       </div>
-      <div class="scroll" id="confirm-screen-el">
-        <div class="lbl" style="margin-bottom:16px">Ваши ставки</div>
-        ${cardsHtml}
+      <div style="padding:16px 16px calc(100px + var(--safe))">
+        <div class="lbl" style="margin-bottom:14px">Ваши ставки</div>
+        ${cards}
         <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid rgba(201,168,76,.12);margin-top:4px">
-          <span style="font-size:14px;color:rgba(245,240,232,.5)">Всего ставка</span>
-          <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)">🪙${totalAmt}</span>
+          <span style="font-size:14px;color:rgba(245,240,232,.5)">Итого ставка</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)">🪙${total}</span>
         </div>
-        <div style="height:80px"></div>
       </div>
-      <div class="confirm-footer">
-        <button class="btn-ghost" style="flex:1" onclick="closeConfirmScreen()">← Изменить</button>
+      <div class="overlay-footer">
+        <button class="btn-ghost" style="flex:1" onclick="closeConfirm()">← Изменить</button>
         <button class="btn-gold" style="flex:2" onclick="confirmBets()">Подтвердить ✓</button>
       </div>`;
-    const ov=showOverlay(html,'confirm-overlay');
-    ov.id='confirm-screen-id';
+    document.body.appendChild(ov);
   });
 }
-
-function closeConfirmScreen(){
-  removeOverlay();
-  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data){const me=(data.players||{})[ST.pid];renderBettingUI(data,me,data.current_round)}});
+function closeConfirm(){
+  const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
+  S.pview='betting';
+  dbGet().then(sess=>{if(sess)showBetting(sess,(sess.players||{})[S.pid],sess.current_round)});
 }
-
 async function confirmBets(){
-  const{data:sess}=await sb.from('sessions').select('*').eq('code',ST.code).single();
-  const me=(sess.players||{})[ST.pid];if(!me)return;
+  const sess=await dbGet();if(!sess)return;
+  const me=(sess.players||{})[S.pid];if(!me)return;
   const r=sess.current_round;
-  const bets=sess.bets||{};
+  const bets={...sess.bets};
   if(!bets[r])bets[r]={};
-  bets[r][ST.pid]={};
-  let totalSpent=0;
-  Object.entries(ST.betDraft).forEach(([catId,b])=>{
-    if(b.sel&&b.amt>0){bets[r][ST.pid][catId]={sel:b.sel,amt:b.amt};totalSpent+=b.amt}
+  bets[r][S.pid]={};
+  let spent=0;
+  Object.entries(S.draft).forEach(([cid,b])=>{
+    if(b.sel&&b.amt>0){bets[r][S.pid][cid]={sel:b.sel,amt:b.amt};spent+=b.amt}
   });
-  const players=sess.players;
-  players[ST.pid].chips-=totalSpent;
-  await sb.from('sessions').update({bets,players}).eq('code',ST.code);
-  removeOverlay();
-  // Show felt screen
-  const updSess=await sb.from('sessions').select('*').eq('code',ST.code).single();
-  showFeltScreen(updSess.data,bets[r][ST.pid],r,(updSess.data?.players||{})[ST.pid]);
+  const players={...sess.players};
+  players[S.pid]={...me,chips:me.chips-spent};
+  await dbUpd({bets,players});
+  const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
+  S.pview='waiting';
+  const newSess=await dbGet();
+  if(newSess)showWaiting(newSess,bets[r][S.pid],r);
 }
 
-// ── FELT WAITING SCREEN ──
-function showFeltScreen(sess,myBets,r,me){
-  removeOverlay();
+/* ── WAITING (FELT) ── */
+function showWaiting(sess,myBets,r){
   const wine=sess.wines[r-1];
-  const html=`
-    <div class="felt-header">
+  const myCards=Object.entries(myBets).map(([cid,b])=>{
+    const cat=(sess.cats||[]).find(c=>c.id===cid);
+    return`<div class="felt-bet-card">
+      <div class="felt-cat-lbl">${esc(cat?.name||cid)}</div>
+      <div class="felt-cat-sel">${esc(b.sel)}</div>
+      <div class="felt-cat-amt">🪙 ${b.amt}</div>
+    </div>`;
+  }).join('');
+  const othersHTML=buildOthersHTML(sess,r);
+  pView(`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
       <div style="flex:1">
         <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${esc(wine?.name||'Вино №'+r)}</div>
         <div class="lbl" style="margin-top:2px">Ставки приняты · Ожидаем ответа</div>
       </div>
       <div class="spinner"></div>
     </div>
-    <div class="felt-content" id="felt-screen-el">
-      <div class="lbl" style="margin-bottom:12px">Ваши ставки</div>
-      <div id="felt-my-bets">
-        ${Object.entries(myBets).map(([catId,b])=>{
-          const cat=(sess.cats||[]).find(c=>c.id===catId);
-          return`<div class="felt-bet-card">
-            <div class="felt-cat-name">${esc(cat?.name||catId)}</div>
-            <div class="felt-cat-sel">${esc(b.sel)}</div>
-            <div class="felt-cat-amt">🪙 ${b.amt}</div>
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="div"></div>
-      <div id="felt-others"></div>
-    </div>`;
-  const el=showOverlay(html,'felt-screen');
-  el.id='felt-screen-id';
-  updateFeltOthers(sess,r);
+    <div class="lbl" style="margin-bottom:10px">Ваши ставки</div>
+    ${myCards}
+    <div id="waiting-others">${othersHTML}</div>
+  `,'felt-view');
 }
-
-function updateFeltOthers(sess,r){
-  const el=document.getElementById('felt-others');if(!el)return;
+function refreshWaitingOthers(sess,r){
+  const el=document.getElementById('waiting-others');
+  if(el)el.innerHTML=buildOthersHTML(sess,r);
+}
+function buildOthersHTML(sess,r){
   const roundBets=(sess.bets||{})[r]||{},players=sess.players||{};
-  // Show ALL players — those who bet show bets, others show waiting
-  const allPlayers=Object.entries(players).filter(([pid])=>pid!==ST.pid);
-  if(!allPlayers.length){el.innerHTML='';return}
-  let h=`<div class="others-felt"><div class="others-felt-title">Ставки других игроков</div>`;
-  allPlayers.forEach(([pid,p])=>{
+  const others=Object.entries(players).filter(([pid])=>pid!==S.pid);
+  if(!others.length)return'';
+  let h=`<div class="others-panel"><div class="others-title">Ставки других игроков</div>`;
+  others.forEach(([pid,p])=>{
     const pb=roundBets[pid];
     if(pb){
-      const tags=Object.entries(pb).map(([catId,bet])=>{
-        const cat=(sess.cats||[]).find(c=>c.id===catId);
-        return`<span class="other-chip-tag">${esc(cat?.name||catId)}: ${esc(bet.sel)} 🪙${bet.amt}</span>`;
+      const tags=Object.entries(pb).map(([cid,bet])=>{
+        const cat=(sess.cats||[]).find(c=>c.id===cid);
+        return`<span class="other-tag">${esc(cat?.name||cid)}: ${esc(bet.sel)} 🪙${bet.amt}</span>`;
       }).join('');
-      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-chips-list">${tags}</div></div>`;
+      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-tags">${tags}</div></div>`;
     } else {
-      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-chips-list"><span style="font-size:11px;color:rgba(245,240,232,.25)">думает...</span></div></div>`;
+      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-tags"><span style="font-size:11px;color:rgba(245,240,232,.2)">думает...</span></div></div>`;
     }
   });
-  el.innerHTML=h+'</div>';
+  return h+'</div>';
 }
 
-// ── RESULT SCREEN ──
-function showResultScreen(sess,myBets,revealed,r,me){
-  const existingFelt=document.getElementById('felt-screen-id');
-  if(existingFelt)existingFelt.remove();
-  if(playerOverlay&&playerOverlay.id==='felt-screen-id')playerOverlay=null;
-  const wine=sess.wines[r-1];
-  const cats=sess.cats||[];
-  const allRevealed=cats.every(c=>revealed[c.id]);
-  let totalEarned=0,totalLost=0;
-  const catCards=cats.map((cat,i)=>{
-    const ans=revealed[cat.id];
-    if(!ans)return'';
+/* ── RESULT ── */
+function showResult(sess,myBets,r,me){
+  const wine=sess.wines[r-1],cats=sess.cats||[];
+  let earned=0,lost=0;
+  const cards=cats.map((cat,i)=>{
+    const ans=wine.answers[cat.id];
     const myBet=myBets?.[cat.id];
     const won=myBet&&myBet.sel===ans;
     const nobet=!myBet;
-    if(won)totalEarned+=myBet.amt*cat.mult;
-    if(!won&&myBet)totalLost+=myBet.amt;
+    if(won)earned+=myBet.amt*cat.mult;
+    if(!won&&myBet)lost+=myBet.amt;
     const cls=nobet?'nobet':won?'win':'lose';
     const icon=nobet?'🤷':won?'🎉':'😔';
     const earnTxt=nobet?'':(won?`+🪙${myBet.amt*cat.mult}`:`-🪙${myBet.amt}`);
-    return`<div class="result-cat-card ${cls}" style="animation-delay:${i*0.1}s">
-      <div class="result-cat-icon">${icon}</div>
-      <div class="result-cat-info">
-        <div class="result-cat-label">${esc(cat.name)} ×${cat.mult}</div>
-        <div class="result-cat-answer">${esc(ans)}</div>
-        ${myBet?`<div class="result-cat-yours">Вы: ${esc(myBet.sel)}</div>`:'<div class="result-cat-yours" style="color:rgba(245,240,232,.25)">Ставки не было</div>'}
+    return`<div class="result-card ${cls}" style="animation-delay:${i*.1}s">
+      <div class="result-icon">${icon}</div>
+      <div class="result-info">
+        <div class="result-lbl">${esc(cat.name)} ×${cat.mult}</div>
+        <div class="result-ans">${esc(ans)}</div>
+        ${myBet?`<div class="result-yours">Вы: ${esc(myBet.sel)}</div>`:'<div class="result-yours" style="color:rgba(245,240,232,.2)">Ставки не было</div>'}
       </div>
-      ${myBet?`<div class="result-cat-earn ${won?'win':'lose'}">${earnTxt}</div>`:''}
+      ${earnTxt?`<div class="result-earn ${won?'win':'lose'}">${earnTxt}</div>`:''}
     </div>`;
   }).join('');
 
-  const totalNet=totalEarned-totalLost;
-  const html=`
-    <div style="padding:20px 16px 8px;position:relative;z-index:1;width:100%">
-      <div class="result-wine-title">${esc(wine?.name||'Вино №'+r)}</div>
-      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(201,168,76,.4);text-align:center;margin-bottom:20px">Результаты раунда</div>
+  const net=earned-lost;
+  const isLast=r>=sess.wines.length;
+  const nextBtn=isLast
+    ?`<div style="font-size:13px;color:rgba(245,240,232,.35);text-align:center;padding:8px 0">Ожидаем завершения игры...</div>`
+    :`<div style="font-size:13px;color:rgba(245,240,232,.35);text-align:center;padding:8px 0">Ожидаем следующего вина...</div>`;
+
+  pView(`
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-bottom:2px">${esc(wine?.name||'Вино №'+r)}</div>
+      <div class="lbl">Результаты раунда</div>
     </div>
-    <div class="result-cards-wrap" id="result-screen-el">
-      ${catCards}
-      ${allRevealed?`<div class="total-earned">
-        <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:8px">${totalNet>=0?'Итого заработано':'Итого потеряно'}</div>
-        <div class="total-earned-num" style="color:${totalNet>=0?'#2ecc71':'#e74c3c'}">${totalNet>=0?'+':''} 🪙${totalNet}</div>
-        <div style="font-size:14px;color:rgba(245,240,232,.4);margin-top:8px">Ваш баланс: 🪙${me?me.chips:'—'}</div>
-      </div>
-      <div style="padding:0 16px 16px"><button class="btn-gold" onclick="readyForNext()">Готов к следующему вину →</button></div>`
-      :'<div style="text-align:center;padding:20px;color:rgba(245,240,232,.35);font-size:13px">Ожидаем остальных ответов...</div>'}
-      ${allRevealed?lbHTMLsmall(sess):''}
-    </div>`;
-  const el=showOverlay(html,'result-screen');
-  el.id='result-screen-id';
-  // Animate chips if won
-  if(totalEarned>0)animateChips(totalEarned);
+    ${cards}
+    <div class="total-box">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:8px">${net>=0?'Итого заработано':'Итого потеряно'}</div>
+      <div class="total-num" style="color:${net>=0?'#2ecc71':'#e74c3c'}">${net>=0?'+':''} 🪙${net}</div>
+      <div style="font-size:14px;color:rgba(245,240,232,.4);margin-top:6px">Баланс: 🪙${me?me.chips:'—'}</div>
+    </div>
+    ${lbSmall(sess)}
+    <div style="margin-top:16px">${nextBtn}</div>
+  `,'result-view');
+  if(earned>0)flyChips(earned);
 }
 
-function readyForNext(){
-  const rs=document.getElementById('result-screen-id');
-  if(rs){rs.remove();if(playerOverlay===rs)playerOverlay=null;}
-  ST.readyForNext=true;ST.lastRound=0; // reset so renderPlayer re-evaluates
-  sb.from('sessions').select('*').eq('code',ST.code).single().then(({data})=>{if(data)renderPlayer(data)});
+function updateResult(sess,myBets,r,me){showResult(sess,myBets,r,me)}
+
+function lbSmall(sess){
+  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
+  return`<div class="div"></div>
+  <div class="lbl" style="margin-bottom:10px">Рейтинг</div>
+  <div class="lb">${sorted.map(([id,p],i)=>`
+    <div class="lb-row ${id===S.pid?'me':''}">
+      <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
+      <div class="avatar" style="background:${avc(p.name)};width:28px;height:28px;font-size:12px">${p.name[0].toUpperCase()}</div>
+      <div style="flex:1;font-size:14px">${esc(p.name)}${id===S.pid?' <span style="font-size:11px;opacity:.45">(вы)</span>':''}</div>
+      <div class="lb-chips">🪙 ${p.chips}</div>
+    </div>`).join('')}
+  </div>`;
 }
 
-function updateResultScreen(sess,myBets,revealed,r,me){
-  // Just re-render the whole thing
-  const el=document.getElementById('result-screen-id');
-  if(el){el.remove();if(playerOverlay===el)playerOverlay=null}
-  showResultScreen(sess,myBets,revealed,r,me);
+
+
+/* ── FINAL ── */
+function finalHTML(sess){
+  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
+  const w=sorted[0];
+  return`<div style="text-align:center;padding:40px 0 20px">
+    <div class="crown">🏆</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);margin-bottom:4px">Игра завершена!</div>
+    <div style="font-size:14px;color:rgba(245,240,232,.4);margin-bottom:6px">${esc(sess.name)}</div>
+    ${w?`<div style="font-size:15px;color:rgba(245,240,232,.6)">Победитель: <strong style="color:var(--gl)">${esc(w[1].name)}</strong></div>`:''}
+  </div>
+  <div class="div"></div>
+  <div class="lbl" style="margin-bottom:12px">Итоговая таблица</div>
+  <div class="lb">
+    ${sorted.map(([id,p],i)=>`<div class="lb-row ${i===0?'winner':''} ${id===S.pid?'me':''}">
+      <div class="lb-rank ${i<3?'top':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+      <div class="avatar" style="background:${avc(p.name)};width:32px;height:32px;font-size:14px">${p.name[0].toUpperCase()}</div>
+      <div style="flex:1"><div style="font-size:15px">${esc(p.name)}${id===S.pid?' <span style="font-size:11px;opacity:.45">(вы)</span>':''}</div>${i===0?'<div style="font-size:11px;color:var(--gold);margin-top:2px">Победитель!</div>':''}</div>
+      <div class="lb-chips">🪙 ${p.chips}</div>
+    </div>`).join('')}
+  </div>`;
 }
 
-function animateChips(amount){
-  const count=Math.min(Math.ceil(amount/20),12);
-  for(let i=0;i<count;i++){
+/* ── CHIP ANIMATION ── */
+function flyChips(amt){
+  const n=Math.min(Math.ceil(amt/15),14);
+  for(let i=0;i<n;i++){
     setTimeout(()=>{
       const el=document.createElement('div');
-      el.className='chip-fly';
-      el.textContent='🪙';
-      const tx=(Math.random()-0.5)*200;
-      const ty=-(Math.random()*300+100);
-      el.style.cssText=`left:${30+Math.random()*40}%;top:60%;--tx:${tx}px;--ty:${ty}px;animation-delay:${Math.random()*0.4}s`;
-      document.body.appendChild(el);
-      setTimeout(()=>el.remove(),1800);
-    },i*80);
+      el.className='chip-fly';el.textContent='🪙';
+      const tx=(Math.random()-.5)*200,ty=-(100+Math.random()*250);
+      el.style.cssText=`left:${25+Math.random()*50}%;top:55%;--tx:${tx}px;--ty:${ty}px;animation-delay:${Math.random()*.5}s`;
+      document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
+    },i*70);
   }
 }
 
-function lbHTMLsmall(sess){
-  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  return`<div style="padding:0 0 16px"><div class="lbl" style="margin:16px 0 10px">Рейтинг</div>
-  <div class="lb">${sorted.map(([id,p],i)=>`<div class="lb-row ${id===ST.pid?'me':''}">
-    <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
-    <div class="avatar" style="background:${avc(p.name)};width:28px;height:28px;font-size:12px">${p.name[0].toUpperCase()}</div>
-    <div style="flex:1;font-size:14px">${esc(p.name)}${id===ST.pid?' <span style="font-size:11px;opacity:.5">(вы)</span>':''}</div>
-    <div class="lb-chips">🪙 ${p.chips}</div>
-  </div>`).join('')}</div></div>`;
-}
-
-// ── FINAL SCREEN ──
-function showFinalScreen(sess){
-  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  const winner=sorted[0];
-  const html=`
-    <div style="position:fixed;inset:0;z-index:70;background:var(--felt);overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .3s ease">
-      <div style="padding:40px 20px 20px;text-align:center;position:relative;z-index:1">
-        <div class="winner-crown">🏆</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);margin-bottom:4px">Игра завершена!</div>
-        <div style="font-size:14px;color:rgba(245,240,232,.4);margin-bottom:8px">${esc(sess.name)}</div>
-        ${winner?`<div style="font-size:15px;color:rgba(245,240,232,.6)">Победитель: <strong style="color:var(--gl)">${esc(winner[1].name)}</strong> · 🪙${winner[1].chips}</div>`:''}
-      </div>
-      <div style="padding:0 16px 40px;position:relative;z-index:1">
-        <div class="lbl" style="margin-bottom:12px">Итоговая таблица</div>
-        <div class="lb">
-          ${sorted.map(([id,p],i)=>`<div class="lb-row ${i===0?'winner':''} ${id===ST.pid?'me':''}">
-            <div class="lb-rank ${i<3?'top':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
-            <div class="avatar" style="background:${avc(p.name)};width:32px;height:32px;font-size:14px">${p.name[0].toUpperCase()}</div>
-            <div style="flex:1">
-              <div style="font-size:15px">${esc(p.name)}${id===ST.pid?' <span style="font-size:11px;opacity:.5">(вы)</span>':''}</div>
-              ${i===0?`<div style="font-size:11px;color:var(--gold);margin-top:2px">Победитель!</div>`:''}
-            </div>
-            <div class="lb-chips">🪙 ${p.chips}</div>
-          </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-  const el=document.createElement('div');
-  el.innerHTML=html;
-  document.body.appendChild(el.firstElementChild);
-}
-
-// ── UTILS ──
-function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<6;i++)r+=c[~~(Math.random()*c.length)];return r}
-function genId(){return Math.random().toString(36).slice(2,11)}
-const AVC=['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];
-function avc(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%AVC.length;return AVC[h]}
-function pl(n,one,few,many){if(n%10===1&&n%100!==11)return one;if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return few;return many}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
-
-window.addEventListener('DOMContentLoaded',()=>{renderWinesList();go('screen-landing')});
+window.addEventListener('DOMContentLoaded',()=>{renderWines();go('screen-landing')});
 </script>
 </body>
 </html>
