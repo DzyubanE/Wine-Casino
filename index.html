@@ -379,7 +379,6 @@ const ST = {
   curRound: 0,        // round we're currently displaying (for view reset detection)
   inConfirm: false,   // is confirm overlay open
   lastResultRound: 0, // last round where result was shown (prevents re-flash)
-  lastRenderedView: null, // last rendered view name (betting/waiting/result/confirm)
 
   // Last seen state (for diffing)
   lastSess: null
@@ -938,7 +937,7 @@ function drawPlayer(sess) {
   const me = (sess.players || {})[ST.pid];
   if (me) $('p-chips-hdr').textContent = me.chips;
 
-  // Phase: finished → final screen
+  // Phase: finished
   if (sess.phase === 'finished') {
     closeConfirmOverlay();
     ST.curRound = sess.current_round;
@@ -947,48 +946,31 @@ function drawPlayer(sess) {
   }
 
   const r = sess.current_round;
-  const myBets = ((sess.bets || {})[r] || {})[ST.pid] || null;
+  // Always read bets fresh from the session object passed in
+  const roundBets = (sess.bets || {})[r] || {};
+  const myBets = roundBets[ST.pid] && Object.keys(roundBets[ST.pid]).length > 0
+    ? roundBets[ST.pid]
+    : null;
   const isRevealed = !!(sess.revealed || {})[r];
 
-  // Detect round transition: clear draft, close confirm
+  // Round changed — reset local draft and close confirm
   if (r !== ST.curRound) {
     ST.draft = {};
     ST.curRound = r;
     closeConfirmOverlay();
-    ST.lastRenderedView = null; // force re-render
   }
 
-  // Determine target view
-  let targetView;
-  if (isRevealed) targetView = 'result';
-  else if (myBets && Object.keys(myBets).length > 0) targetView = 'waiting';
-  else if (ST.inConfirm) targetView = 'confirm';
-  else targetView = 'betting';
-
-  // Render only if view changed OR data within view changed meaningfully
-  if (targetView === 'result') {
+  // State machine — always fully re-render, no caching
+  if (isRevealed) {
     showResult(sess, myBets, r, me);
-  } else if (targetView === 'waiting') {
-    // Always update — others' bets may change in real time
-    if (ST.lastRenderedView !== 'waiting') {
-      showWaiting(sess, myBets, r, me);
-    } else {
-      refreshWaitingOthers(sess, r);
-    }
-  } else if (targetView === 'confirm') {
-    // Don't redraw underneath — confirm overlay is on top
-    // (just keep displayed chips in header updated)
+  } else if (myBets) {
+    showWaiting(sess, myBets, r, me);
+  } else if (ST.inConfirm) {
+    // Confirm overlay is on top — don't redraw betting behind it
+    // but do update chips header (already done above)
   } else {
-    // betting — only render if not already there OR draft is empty (new round)
-    if (ST.lastRenderedView !== 'betting') {
-      showBetting(sess, me, r);
-    } else {
-      // Just update the available chips bar
-      updateAvailBar();
-      updateChipsAvailability();
-    }
+    showBetting(sess, me, r);
   }
-  ST.lastRenderedView = targetView;
 }
 
 function pView(html, extraClass) {
@@ -1064,25 +1046,42 @@ function showBetting(sess, me, r) {
   h += `<button class="btn-gold" id="place-btn" onclick="openConfirm()" disabled style="margin-top:8px">Поставить →</button>`;
 
   pView(h, '');
+  attachBettingHandlers();
+  updatePlaceBtn();
+  updateChipsAvailability();
+}
 
-  // Attach handlers
-  document.querySelectorAll('.opt').forEach(el => {
-    el.onclick = () => {
-      const cid = el.dataset.c;
-      const opt = el.dataset.o;
+function attachBettingHandlers() {
+  // Use the p-content as delegate — survives any inner re-renders
+  const content = $('p-content');
+  if (!content) return;
+
+  // Remove old delegates (clone trick — fastest way)
+  const fresh = content.cloneNode(true);
+  content.parentNode.replaceChild(fresh, content);
+  // Re-query after replace
+  const el = $('p-content');
+
+  el.addEventListener('click', function(e) {
+    // OPT button
+    const optEl = e.target.closest('.opt');
+    if (optEl && optEl.dataset.c) {
+      const cid = optEl.dataset.c;
+      const opt = optEl.dataset.o;
       if (!ST.draft[cid]) ST.draft[cid] = { sel: null, amt: 0 };
       ST.draft[cid].sel = opt;
-      document.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(o =>
+      el.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(o =>
         o.classList.toggle('sel', o.dataset.o === opt)
       );
       updateCatBlock(cid);
-    };
-  });
-  document.querySelectorAll('.chip').forEach(el => {
-    el.onclick = () => {
-      if (el.classList.contains('disabled')) return;
-      const cid = el.dataset.c;
-      const v = +el.dataset.v;
+      return;
+    }
+    // CHIP button
+    const chipEl = e.target.closest('.chip');
+    if (chipEl && chipEl.dataset.c) {
+      if (chipEl.classList.contains('disabled')) return;
+      const cid = chipEl.dataset.c;
+      const v = +chipEl.dataset.v;
       if (!ST.draft[cid]) ST.draft[cid] = { sel: null, amt: 0 };
       const me2 = (ST.lastSess?.players || {})[ST.pid];
       const avail = availChips(me2);
@@ -1092,11 +1091,13 @@ function showBetting(sess, me, r) {
       }
       ST.draft[cid].amt += v;
       updateCatBlock(cid);
-    };
+      return;
+    }
+    // PLACE button
+    if (e.target.id === 'place-btn' || e.target.closest('#place-btn')) {
+      openConfirm();
+    }
   });
-
-  updatePlaceBtn();
-  updateChipsAvailability();
 }
 
 function updateCatBlock(cid) {
@@ -1141,9 +1142,7 @@ function clearCatDraft(cid) {
   delete ST.draft[cid];
   const me = (ST.lastSess?.players || {})[ST.pid];
   if (ST.lastSess) {
-    ST.lastRenderedView = null; // force re-render
     showBetting(ST.lastSess, me, ST.lastSess.current_round);
-    ST.lastRenderedView = 'betting';
   }
 }
 
@@ -1248,7 +1247,6 @@ async function confirmBets() {
   // Optimistic: clear draft and overlay immediately so the realtime update doesn't fight us
   ST.draft = {};
   closeConfirmOverlay();
-  ST.lastRenderedView = null; // force re-render to waiting
 
   await dbUpd({ bets, players });
   // Trigger immediate redraw with optimistic local state
