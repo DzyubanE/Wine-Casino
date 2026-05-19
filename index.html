@@ -379,6 +379,7 @@ const ST = {
   curRound: 0,        // round we're currently displaying (for view reset detection)
   inConfirm: false,   // is confirm overlay open
   lastResultRound: 0, // last round where result was shown (prevents re-flash)
+  lastRenderedView: null, // last rendered view name (betting/waiting/result/confirm)
 
   // Last seen state (for diffing)
   lastSess: null
@@ -924,17 +925,23 @@ async function copyCode() {
 
 
 // ════════════════════════════════════════════════
-//  PLAYER UI — core dispatcher
+//  PLAYER UI — fully reactive
 // ════════════════════════════════════════════════
+
+// Single source of truth — every render is a complete rebuild from `sess` state.
+// Local state ST.draft is per-round and reset when round changes.
+// Confirm overlay state is tracked separately and survives session updates.
+
 function drawPlayer(sess) {
   if (!sess) return;
   ST.lastSess = sess;
   const me = (sess.players || {})[ST.pid];
   if (me) $('p-chips-hdr').textContent = me.chips;
 
-  // Finished
+  // Phase: finished → final screen
   if (sess.phase === 'finished') {
     closeConfirmOverlay();
+    ST.curRound = sess.current_round;
     pView(finalHTML(sess), '');
     return;
   }
@@ -943,51 +950,60 @@ function drawPlayer(sess) {
   const myBets = ((sess.bets || {})[r] || {})[ST.pid] || null;
   const isRevealed = !!(sess.revealed || {})[r];
 
-  // Round change: reset draft, close any overlays
+  // Detect round transition: clear draft, close confirm
   if (r !== ST.curRound) {
     ST.draft = {};
     ST.curRound = r;
     closeConfirmOverlay();
-    // Force re-render based on new round state
+    ST.lastRenderedView = null; // force re-render
   }
 
-  // State machine — order matters!
-  // 1. Revealed → show result (until next round)
-  if (isRevealed) {
+  // Determine target view
+  let targetView;
+  if (isRevealed) targetView = 'result';
+  else if (myBets && Object.keys(myBets).length > 0) targetView = 'waiting';
+  else if (ST.inConfirm) targetView = 'confirm';
+  else targetView = 'betting';
+
+  // Render only if view changed OR data within view changed meaningfully
+  if (targetView === 'result') {
     showResult(sess, myBets, r, me);
-    return;
+  } else if (targetView === 'waiting') {
+    // Always update — others' bets may change in real time
+    if (ST.lastRenderedView !== 'waiting') {
+      showWaiting(sess, myBets, r, me);
+    } else {
+      refreshWaitingOthers(sess, r);
+    }
+  } else if (targetView === 'confirm') {
+    // Don't redraw underneath — confirm overlay is on top
+    // (just keep displayed chips in header updated)
+  } else {
+    // betting — only render if not already there OR draft is empty (new round)
+    if (ST.lastRenderedView !== 'betting') {
+      showBetting(sess, me, r);
+    } else {
+      // Just update the available chips bar
+      updateAvailBar();
+      updateChipsAvailability();
+    }
   }
-  // 2. Bets confirmed, waiting → felt screen
-  if (myBets) {
-    closeConfirmOverlay();
-    showWaiting(sess, myBets, r, me);
-    return;
-  }
-  // 3. Confirm overlay open → don't redraw underlying, just refresh confirm if needed
-  if (ST.inConfirm) {
-    // Update available chips in confirm screen if needed (not critical)
-    return;
-  }
-  // 4. Default: betting screen
-  showBetting(sess, me, r);
+  ST.lastRenderedView = targetView;
 }
 
 function pView(html, extraClass) {
   const el = $('p-content');
   el.className = 'p-content' + (extraClass ? ' ' + extraClass : '');
-  el.innerHTML = `<div class="p-view">${html}</div>`;
+  el.innerHTML = '<div class="p-view">' + html + '</div>';
 }
 
-// Calculate available chips for player (real-time during betting)
 function availChips(me) {
   if (!me) return 0;
   const draftTotal = Object.values(ST.draft).reduce((s, b) => s + (b.amt || 0), 0);
   return me.chips - draftTotal;
 }
 
-// ════════════════════════════════════════════════
-//  PLAYER — BETTING SCREEN
-// ════════════════════════════════════════════════
+// ────────────── BETTING SCREEN ──────────────
 function showBetting(sess, me, r) {
   const cats = sess.cats || [];
   const wine = sess.wines[r - 1];
@@ -1010,31 +1026,37 @@ function showBetting(sess, me, r) {
     h += '<div class="lbl" style="margin-bottom:12px">Выберите ответ и сумму ставки в нужных категориях. Категории можно пропускать.</div>';
   }
 
+  if (!cats.length) {
+    h += '<div style="text-align:center;padding:40px;color:rgba(245,240,232,.4)">В этой игре нет активных категорий</div>';
+    pView(h, '');
+    return;
+  }
+
   cats.forEach(cat => {
     const bs = ST.draft[cat.id] || { sel: null, amt: 0 };
     const isReady = bs.sel && bs.amt > 0;
     h += `<div class="cat-block${isReady ? ' done' : ''}" id="cb-${cat.id}">
       <div class="cat-block-head">
         <div class="cat-title">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
-        <div class="cat-stake-display" id="cbv-${cat.id}">${isReady ? '🪙' + bs.amt : (bs.sel ? bs.sel : '—')}</div>
+        <div class="cat-stake-display" id="cbv-${cat.id}">${isReady ? '🪙' + bs.amt : (bs.sel ? esc(bs.sel) : '—')}</div>
       </div>
       <div class="opts-grid">
         ${cat.options.map(o => {
           const f = FLAGS[o];
           const sel = bs.sel === o ? ' sel' : '';
-          return `<div class="opt${sel}" data-c="${cat.id}" data-o="${attr(o)}">${f ? `<img src="https://flagcdn.com/w40/${f}.png" alt="">` : ''} ${esc(o)}</div>`;
+          return `<div class="opt${sel}" data-c="${attr(cat.id)}" data-o="${attr(o)}">${f ? `<img src="https://flagcdn.com/w40/${f}.png" alt="">` : ''} ${esc(o)}</div>`;
         }).join('')}
       </div>
       <div class="chips-row">
-        <div class="chip c1" data-c="${cat.id}" data-v="1">1</div>
-        <div class="chip c5" data-c="${cat.id}" data-v="5">5</div>
-        <div class="chip c10" data-c="${cat.id}" data-v="10">10</div>
-        <div class="chip c25" data-c="${cat.id}" data-v="25">25</div>
-        <div class="chip c50" data-c="${cat.id}" data-v="50">50</div>
+        <div class="chip c1" data-c="${attr(cat.id)}" data-v="1">1</div>
+        <div class="chip c5" data-c="${attr(cat.id)}" data-v="5">5</div>
+        <div class="chip c10" data-c="${attr(cat.id)}" data-v="10">10</div>
+        <div class="chip c25" data-c="${attr(cat.id)}" data-v="25">25</div>
+        <div class="chip c50" data-c="${attr(cat.id)}" data-v="50">50</div>
       </div>
       <div class="chip-foot">
         <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">🪙 <span id="sd-${cat.id}">${bs.amt}</span></div>
-        <button class="btn-clr" onclick="clearCatDraft('${cat.id}')">Сброс</button>
+        <button class="btn-clr" onclick="clearCatDraft('${attr(cat.id)}')">Сброс</button>
       </div>
     </div>`;
   });
@@ -1046,7 +1068,8 @@ function showBetting(sess, me, r) {
   // Attach handlers
   document.querySelectorAll('.opt').forEach(el => {
     el.onclick = () => {
-      const cid = el.dataset.c, opt = el.dataset.o;
+      const cid = el.dataset.c;
+      const opt = el.dataset.o;
       if (!ST.draft[cid]) ST.draft[cid] = { sel: null, amt: 0 };
       ST.draft[cid].sel = opt;
       document.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(o =>
@@ -1055,7 +1078,6 @@ function showBetting(sess, me, r) {
       updateCatBlock(cid);
     };
   });
-
   document.querySelectorAll('.chip').forEach(el => {
     el.onclick = () => {
       if (el.classList.contains('disabled')) return;
@@ -1093,7 +1115,6 @@ function updateCatBlock(cid) {
 function updatePlaceBtn() {
   const btn = $('place-btn');
   if (!btn) return;
-  // At least one category must have BOTH sel AND amt > 0
   const ok = Object.values(ST.draft).some(b => b.sel && b.amt > 0);
   btn.disabled = !ok;
 }
@@ -1117,18 +1138,16 @@ function updateChipsAvailability() {
 }
 
 function clearCatDraft(cid) {
-  if (ST.draft[cid]) {
-    delete ST.draft[cid];
-  }
-  // Re-render this block from scratch
+  delete ST.draft[cid];
   const me = (ST.lastSess?.players || {})[ST.pid];
-  if (ST.lastSess) showBetting(ST.lastSess, me, ST.lastSess.current_round);
+  if (ST.lastSess) {
+    ST.lastRenderedView = null; // force re-render
+    showBetting(ST.lastSess, me, ST.lastSess.current_round);
+    ST.lastRenderedView = 'betting';
+  }
 }
 
-
-// ════════════════════════════════════════════════
-//  PLAYER — CONFIRM OVERLAY
-// ════════════════════════════════════════════════
+// ────────────── CONFIRM OVERLAY ──────────────
 function openConfirm() {
   if (!ST.lastSess) return;
   const sess = ST.lastSess;
@@ -1191,13 +1210,24 @@ function closeConfirmOverlay() {
 }
 
 async function confirmBets() {
+  // Re-fetch session to get fresh state (avoid stale chips)
   const sess = await dbGet();
-  if (!sess) return;
+  if (!sess) { toast('Ошибка соединения'); return; }
   const me = (sess.players || {})[ST.pid];
   if (!me) { toast('Ошибка: игрок не найден'); return; }
   const r = sess.current_round;
 
-  // Calculate total spend
+  // Verify still in betting phase
+  if ((sess.revealed || {})[r]) { toast('Ответы уже открыты'); closeConfirmOverlay(); return; }
+
+  // If bet already exists (somehow), don't double-spend
+  if ((sess.bets || {})[r] && (sess.bets || {})[r][ST.pid]) {
+    toast('Ставки уже приняты');
+    closeConfirmOverlay();
+    ST.draft = {};
+    return;
+  }
+
   const myBets = {};
   let spent = 0;
   Object.entries(ST.draft).forEach(([cid, b]) => {
@@ -1206,31 +1236,32 @@ async function confirmBets() {
       spent += b.amt;
     }
   });
-
   if (spent === 0) { toast('Сделайте хотя бы одну ставку'); return; }
   if (spent > me.chips) { toast('Недостаточно фишек'); return; }
 
-  // Update DB: add bets and deduct chips
   const bets = { ...sess.bets };
   if (!bets[r]) bets[r] = {};
-  bets[r][ST.pid] = myBets;
+  bets[r] = { ...bets[r], [ST.pid]: myBets };
 
   const players = { ...sess.players, [ST.pid]: { ...me, chips: me.chips - spent } };
 
-  await dbUpd({ bets, players });
+  // Optimistic: clear draft and overlay immediately so the realtime update doesn't fight us
+  ST.draft = {};
   closeConfirmOverlay();
-  // Player view will re-render via realtime → drawPlayer
+  ST.lastRenderedView = null; // force re-render to waiting
+
+  await dbUpd({ bets, players });
+  // Trigger immediate redraw with optimistic local state
+  drawPlayer({ ...sess, bets, players });
 }
 
-// ════════════════════════════════════════════════
-//  PLAYER — WAITING (FELT) SCREEN
-// ════════════════════════════════════════════════
+// ────────────── WAITING (FELT) SCREEN ──────────────
 function showWaiting(sess, myBets, r, me) {
   const wine = sess.wines[r - 1];
   const cats = sess.cats || [];
 
   const myCards = cats
-    .filter(c => myBets[c.id])
+    .filter(c => myBets && myBets[c.id])
     .map(c => {
       const b = myBets[c.id];
       return `<div class="felt-bet-card">
@@ -1240,7 +1271,7 @@ function showWaiting(sess, myBets, r, me) {
       </div>`;
     }).join('');
 
-  const totalStake = Object.values(myBets).reduce((s, b) => s + b.amt, 0);
+  const totalStake = Object.values(myBets || {}).reduce((s, b) => s + b.amt, 0);
 
   pView(`
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
@@ -1257,6 +1288,11 @@ function showWaiting(sess, myBets, r, me) {
     ${myCards || '<div style="color:rgba(245,240,232,.3);text-align:center;padding:20px;font-size:14px">Без ставок</div>'}
     <div id="waiting-others">${buildOthersHTML(sess, r)}</div>
   `, 'felt-bg');
+}
+
+function refreshWaitingOthers(sess, r) {
+  const el = $('waiting-others');
+  if (el) el.innerHTML = buildOthersHTML(sess, r);
 }
 
 function buildOthersHTML(sess, r) {
@@ -1286,24 +1322,18 @@ function buildOthersHTML(sess, r) {
   return h + '</div>';
 }
 
-// ════════════════════════════════════════════════
-//  PLAYER — RESULT SCREEN
-// ════════════════════════════════════════════════
+// ────────────── RESULT SCREEN ──────────────
 function showResult(sess, myBets, r, me) {
   const wine = sess.wines[r - 1];
   const cats = sess.cats || [];
 
-  // Calculate totals
   let earned = 0, lost = 0, betCount = 0;
   cats.forEach(cat => {
     const myBet = myBets ? myBets[cat.id] : null;
     if (!myBet) return;
     betCount++;
-    if (myBet.sel === wine.answers[cat.id]) {
-      earned += myBet.amt * cat.mult;
-    } else {
-      lost += myBet.amt;
-    }
+    if (myBet.sel === wine.answers[cat.id]) earned += myBet.amt * cat.mult;
+    else lost += myBet.amt;
   });
   const net = earned - lost;
 
@@ -1316,8 +1346,7 @@ function showResult(sess, myBets, r, me) {
     const icon = nobet ? '🤷' : won ? '🎉' : '😔';
     let earnTxt = '';
     if (myBet) {
-      if (won) earnTxt = `+🪙${myBet.amt * cat.mult}`;
-      else earnTxt = `−🪙${myBet.amt}`;
+      earnTxt = won ? `+🪙${myBet.amt * cat.mult}` : `−🪙${myBet.amt}`;
     }
     return `<div class="result-card ${cls}" style="animation-delay:${i * 0.1}s">
       <div class="result-icon">${icon}</div>
@@ -1326,7 +1355,7 @@ function showResult(sess, myBets, r, me) {
         <div class="result-ans">${esc(ans || '—')}</div>
         ${myBet
           ? `<div class="result-yours">Вы: ${esc(myBet.sel)} · 🪙${myBet.amt}</div>`
-          : '<div class="result-yours" style="color:rgba(245,240,232,.2)">Не ставили</div>'}
+          : '<div class="result-yours" style="color:rgba(245,240,232,.25)">Не ставили</div>'}
       </div>
       ${earnTxt ? `<div class="result-earn ${won ? 'win' : 'lose'}">${earnTxt}</div>` : ''}
     </div>`;
@@ -1347,7 +1376,7 @@ function showResult(sess, myBets, r, me) {
       <div class="total-num" style="color:${totalColor}">${totalDisp}</div>
       <div style="font-size:14px;color:rgba(245,240,232,.45);margin-top:8px">Баланс: 🪙${me ? me.chips : '—'}</div>
     </div>` : `<div class="total-box">
-      <div style="font-size:14px;color:rgba(245,240,232,.4)">Ставок в этом раунде не было</div>
+      <div style="font-size:14px;color:rgba(245,240,232,.4)">Вы не сделали ставок в этом раунде</div>
       <div style="font-size:13px;color:rgba(245,240,232,.3);margin-top:4px">Баланс: 🪙${me ? me.chips : '—'}</div>
     </div>`}
     ${lbSmallHTML(sess)}
@@ -1356,12 +1385,12 @@ function showResult(sess, myBets, r, me) {
     </div>
   `, 'felt-bg');
 
-  // Trigger chip-fly animation only if this is a new reveal (not a re-render)
   if (earned > 0 && ST.lastResultRound !== r) {
     setTimeout(() => flyChips(earned), 400);
   }
   ST.lastResultRound = r;
 }
+
 
 function flyChips(amount) {
   const n = Math.min(Math.ceil(amount / 15), 14);
