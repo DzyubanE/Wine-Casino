@@ -4,138 +4,159 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a3a2a">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
 <title>Wine Casino</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--g:#1a3a2a;--felt:#1e4430;--gold:#c9a84c;--gl:#e8c97a;--cream:#f5f0e8;--red:#7a1b2e;--safe:env(safe-area-inset-bottom,0px)}
+:root{--g:#1a3a2a;--felt:#1e4430;--gold:#c9a84c;--gl:#e8c97a;--cream:#f5f0e8;--red:#7a1b2e;--win:#2ecc71;--lose:#e74c3c;--safe:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
-body{background:var(--g);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px}
+body{background:var(--g);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:16px;-webkit-text-size-adjust:100%}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08),transparent 55%);pointer-events:none;z-index:0}
-.screen{display:none;position:fixed;inset:0;z-index:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.screen.active{display:flex;flex-direction:column;animation:fi .22s ease}
-@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.screen{display:none;position:fixed;inset:0;z-index:1;overflow:hidden;flex-direction:column}
+.screen.active{display:flex;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(245,240,232,.4)}
 input[type=text],input[type=number]{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:15px;padding:13px 16px;outline:none;-webkit-appearance:none}
 input:focus{border-color:var(--gold)}
-.btn-gold{background:var(--gold);color:var(--g);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%}
+.btn-gold{background:var(--gold);color:var(--g);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:500;cursor:pointer;width:100%;transition:background .12s}
 .btn-gold:active{background:var(--gl)}
 .btn-gold:disabled{opacity:.35;cursor:not-allowed}
-.btn-sm{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gl);cursor:pointer;white-space:nowrap}
+.btn-sm{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gl);cursor:pointer;white-space:nowrap;transition:background .12s}
 .btn-sm:active{background:rgba(201,168,76,.22)}
-.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 18px;color:rgba(245,240,232,.6);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.btn-sm:disabled{opacity:.35;cursor:not-allowed}
+.btn-ghost{background:transparent;border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 18px;color:rgba(245,240,232,.65);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
 .btn-ghost:active{border-color:var(--gold);color:var(--gl)}
+.btn-ghost:disabled{opacity:.35;cursor:not-allowed}
 .btn-danger{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:#e87c6e;cursor:pointer}
 .back{background:none;border:none;color:rgba(245,240,232,.4);font-size:15px;cursor:pointer;padding:4px 0}
-.page-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
+.back:active{color:var(--cream)}
+.page-header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0;background:var(--g);z-index:2}
 .page-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);flex:1}
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(24px + var(--safe))}
 .f-group{margin-bottom:18px}
 .tag{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:5px 10px;font-size:13px;color:var(--gl)}
-.tag .x{cursor:pointer;color:rgba(201,168,76,.5);font-size:15px;line-height:1}
+.tag .x{cursor:pointer;color:rgba(201,168,76,.5);font-size:15px;line-height:1;padding:0 2px}
 .tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;min-height:10px}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap}
-.pill{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;color:var(--cream);min-height:44px;display:flex;align-items:center}
+.pill{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:9px 16px;font-size:14px;cursor:pointer;color:var(--cream);min-height:44px;display:flex;align-items:center;transition:all .12s}
 .pill.sel{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
-.mult{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--gl)}
+.mult{display:inline-block;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.25);border-radius:6px;padding:2px 7px;font-size:11px;color:var(--gl);font-weight:500}
 .spinner{width:32px;height:32px;border:3px solid rgba(201,168,76,.15);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:calc(18px + var(--safe));left:50%;transform:translateX(-50%);background:rgba(18,46,28,.97);border:1px solid var(--gold);border-radius:12px;padding:12px 22px;font-size:14px;color:var(--cream);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center}
+.toast{position:fixed;bottom:calc(20px + var(--safe));left:50%;transform:translateX(-50%);background:rgba(18,46,28,.97);border:1px solid var(--gold);border-radius:12px;padding:12px 22px;font-size:14px;color:var(--cream);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{opacity:1}
 ::-webkit-scrollbar{display:none}
 .div{height:1px;background:rgba(201,168,76,.1);margin:16px 0}
 .add-opt-row{display:flex;gap:8px}
 .add-opt-row input{flex:1}
 
+/* LOADING */
+#screen-loading{justify-content:center;align-items:center;gap:18px}
+
 /* LANDING */
 #screen-landing{justify-content:center;align-items:center;padding:40px 24px}
 .logo{font-family:'Cormorant Garamond',serif;font-size:clamp(58px,16vw,96px);font-weight:600;color:var(--gold);text-align:center;line-height:.88;letter-spacing:-2px}
-.logo-sub{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,232,.3);text-align:center;margin:10px 0 44px}
+.logo-sub{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,232,.3);text-align:center;margin:10px 0 32px}
 .role-cards{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px}
-.role-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:22px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;min-height:76px}
+.role-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:22px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;min-height:76px;transition:all .15s}
 .role-card:active{background:rgba(201,168,76,.1);border-color:var(--gold)}
 .role-icon{font-size:34px;flex-shrink:0}
 .role-title{font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--gl)}
 .role-desc{font-size:13px;color:rgba(245,240,232,.4);margin-top:2px}
+.resume-bar{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:14px 18px;width:100%;max-width:380px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.resume-info{flex:1;font-size:13px;color:rgba(245,240,232,.7)}
+.resume-info strong{color:var(--gl);font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:2px}
+.resume-info .role-line{font-size:11px;color:rgba(245,240,232,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
 
-/* SETUP */
+/* WINE LIST */
 .wine-item{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .wine-item-head{display:flex;align-items:center;gap:10px;cursor:pointer}
 .wine-num-badge{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);width:28px;flex-shrink:0}
 .wine-answers{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,.1)}
 .answer-chip{font-size:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:4px 10px;color:rgba(245,240,232,.5)}
 .answer-chip.set{border-color:rgba(201,168,76,.3);color:var(--gl)}
-.rev-opt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13px;color:var(--cream);min-height:40px;display:flex;align-items:center}
+.rev-opt{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13px;color:var(--cream);min-height:40px;display:flex;align-items:center;transition:all .12s}
+.rev-opt:active{background:rgba(201,168,76,.1)}
 .rev-opt.sel{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gl)}
 
-/* HOST GAME */
-#screen-host{padding:0}
-.h-topbar{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:10px;flex-shrink:0}
+/* HOST */
+.h-topbar{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--g);z-index:2}
 .h-code-btn{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);letter-spacing:5px;cursor:pointer;background:none;border:none;padding:0}
 .round-pill{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);border-radius:8px;padding:5px 12px;font-size:13px;color:var(--gl);white-space:nowrap}
-.h-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0}
-.h-tab{flex:1;padding:12px 6px;font-size:13px;color:rgba(245,240,232,.35);cursor:pointer;border-bottom:2px solid transparent;text-align:center}
+.h-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.12);flex-shrink:0;background:var(--g);z-index:2}
+.h-tab{flex:1;padding:12px 6px;font-size:13px;color:rgba(245,240,232,.35);cursor:pointer;border-bottom:2px solid transparent;text-align:center;transition:all .12s}
 .h-tab.active{color:var(--gl);border-bottom-color:var(--gold)}
 .h-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px}
-.h-bottom{display:flex;padding:10px 14px;padding-bottom:calc(10px + var(--safe));border-top:1px solid rgba(201,168,76,.12);gap:10px;flex-shrink:0}
+.h-bottom{display:flex;padding:10px 14px;padding-bottom:calc(10px + var(--safe));border-top:1px solid rgba(201,168,76,.12);gap:8px;flex-shrink:0;background:var(--g)}
 .bets-table{width:100%;border-collapse:collapse;font-size:13px}
 .bets-table th{text-align:left;padding:8px 10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.35);border-bottom:1px solid rgba(201,168,76,.1);font-weight:400}
 .bets-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
 .bets-table tr:last-child td{border-bottom:none}
 .player-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
 .player-row:last-child{border-bottom:none}
-.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;color:#fff}
 
 /* PLAYER */
-#screen-player{padding:0}
-.p-header{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.p-header{padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--g);z-index:2}
 .p-name{font-size:14px;color:rgba(245,240,232,.5);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.p-chips{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold)}
+.p-chips{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);display:flex;align-items:center;gap:4px}
 .p-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-
-/* PLAYER VIEWS — full-height panels inside p-content */
 .p-view{min-height:100%;padding:16px 16px calc(24px + var(--safe))}
 
 /* Lobby */
-.lobby-box{text-align:center;padding:48px 0}
-.lobby-code{font-family:'Cormorant Garamond',serif;font-size:50px;color:var(--gold);letter-spacing:10px;margin:10px 0 4px}
+.lobby-box{text-align:center;padding:40px 0 20px}
+.lobby-code{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);letter-spacing:10px;margin:10px 0 4px}
 
-/* Betting */
-.cat-block{background:rgba(0,0,0,.18);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;margin-bottom:12px}
+/* Betting blocks */
+.cat-block{background:rgba(0,0,0,.18);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:14px;margin-bottom:12px;transition:border-color .2s,background .2s}
 .cat-block.done{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.06)}
-.cat-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cat-title{font-size:14px;font-weight:500}
+.cat-block-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px}
+.cat-title{font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.cat-stake-display{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);flex-shrink:0}
 .opts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:7px;margin-bottom:10px}
-.opt{border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.12);min-height:44px}
-.opt:active,.opt.sel{border-color:var(--gold);background:rgba(201,168,76,.13);color:var(--gl)}
+.opt{border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px 12px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.12);min-height:44px;transition:all .12s}
+.opt:active{border-color:var(--gold);background:rgba(201,168,76,.08)}
+.opt.sel{border-color:var(--gold);background:rgba(201,168,76,.14);color:var(--gl)}
 .opt img{width:18px;height:13px;object-fit:cover;border-radius:2px;flex-shrink:0}
 .chips-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.chip{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3);flex-shrink:0}
+.chip{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;cursor:pointer;box-shadow:inset 0 -2px 0 rgba(0,0,0,.3);flex-shrink:0;transition:transform .1s;color:#fff}
 .chip:active{transform:scale(.88)}
+.chip.disabled{opacity:.3;cursor:not-allowed}
 .c1{background:#d5d8dc;color:#333;border-color:#aaa}
-.c5{background:#c0392b;color:#fff;border-color:#e74c3c}
-.c10{background:#2471a3;color:#fff;border-color:#3498db}
-.c25{background:#1e8449;color:#fff;border-color:#2ecc71}
-.c50{background:#2c3e50;color:#fff;border-color:#7f8c8d}
+.c5{background:#c0392b;border-color:#e74c3c}
+.c10{background:#2471a3;border-color:#3498db}
+.c25{background:#1e8449;border-color:#2ecc71}
+.c50{background:#2c3e50;border-color:#7f8c8d}
 .chip-foot{display:flex;align-items:center;gap:8px;margin-top:2px}
-.stake-disp{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);min-width:48px}
 .btn-clr{background:none;border:none;color:rgba(245,240,232,.3);font-size:12px;cursor:pointer;text-decoration:underline;padding:4px}
+.btn-clr:active{color:rgba(245,240,232,.6)}
+
+/* Available chips bar */
+.avail-bar{position:sticky;top:0;background:rgba(20,50,32,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:10px 14px;margin:-16px -16px 14px;border-bottom:1px solid rgba(201,168,76,.15);display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:2}
+.avail-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4)}
+.avail-num{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold)}
+.avail-num.low{color:var(--lose)}
 
 /* Confirm overlay */
-.overlay{position:fixed;inset:0;z-index:20;background:var(--g);display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:fi .2s ease}
+.overlay{position:fixed;inset:0;z-index:20;background:var(--g);display:flex;flex-direction:column;animation:fi .2s ease}
+.overlay-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(96px + var(--safe))}
 .overlay-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 16px;padding-bottom:calc(12px + var(--safe));background:rgba(20,50,32,.97);border-top:1px solid rgba(201,168,76,.15);display:flex;gap:10px;z-index:21}
 .confirm-card{background:rgba(0,0,0,.25);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
-.confirm-cat{flex:1}
+.confirm-cat-info{flex:1;min-width:0}
 .confirm-cat-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:4px}
 .confirm-cat-sel{font-size:16px;font-weight:500}
 .confirm-cat-mult{font-size:12px;color:rgba(245,240,232,.4);margin-top:2px}
-.confirm-amt{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)}
+.confirm-amt{font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);flex-shrink:0}
 
-/* Felt waiting */
-.felt-view{background:var(--felt);position:relative}
-.felt-view::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none;z-index:0}
-.felt-view .p-view{position:relative;z-index:1}
+/* Felt view */
+.felt-bg{background:var(--felt)}
+.felt-bg::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none;z-index:0}
+.felt-bg .p-view{position:relative;z-index:1}
 .felt-bet-card{background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.22);border-radius:14px;padding:14px;margin-bottom:10px}
 .felt-cat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(201,168,76,.45);margin-bottom:5px}
 .felt-cat-sel{font-size:17px;font-weight:500;margin-bottom:3px}
@@ -148,50 +169,59 @@ input:focus{border-color:var(--gold)}
 .other-tags{flex:1;display:flex;flex-wrap:wrap;gap:4px}
 .other-tag{font-size:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 8px;color:rgba(245,240,232,.55)}
 
-/* Result view */
-.result-view{background:var(--felt);position:relative}
-.result-view::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,0,0,.04) 30px,rgba(0,0,0,.04) 31px);pointer-events:none;z-index:0}
-.result-view .p-view{position:relative;z-index:1}
-.result-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;animation:cardIn .35s ease both}
+/* Result */
+.result-card{border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;animation:cardIn .35s ease both;opacity:0}
 @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .result-card.win{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.35)}
 .result-card.lose{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25)}
 .result-card.nobet{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.07)}
 .result-icon{font-size:26px;flex-shrink:0}
-.result-info{flex:1}
+.result-info{flex:1;min-width:0}
 .result-lbl{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(245,240,232,.4);margin-bottom:3px}
-.result-ans{font-size:16px;font-weight:500}
+.result-ans{font-size:16px;font-weight:500;word-break:break-word}
 .result-yours{font-size:12px;color:rgba(245,240,232,.4);margin-top:2px}
-.result-earn{font-family:'Cormorant Garamond',serif;font-size:24px}
-.result-earn.win{color:#2ecc71}
-.result-earn.lose{color:#e74c3c}
+.result-earn{font-family:'Cormorant Garamond',serif;font-size:22px;flex-shrink:0}
+.result-earn.win{color:var(--win)}
+.result-earn.lose{color:var(--lose)}
 .total-box{text-align:center;padding:20px 0 8px}
-.total-num{font-family:'Cormorant Garamond',serif;font-size:52px;animation:pop .5s .6s cubic-bezier(.34,1.56,.64,1) both}
+.total-num{font-family:'Cormorant Garamond',serif;font-size:52px;animation:pop .5s .6s cubic-bezier(.34,1.56,.64,1) both;opacity:0}
 @keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
-
-/* chip fly */
-.chip-fly{position:fixed;font-size:22px;pointer-events:none;z-index:100;animation:cfly 1.2s ease-out forwards}
+.chip-fly{position:fixed;font-size:22px;pointer-events:none;z-index:100;animation:cfly 1.4s ease-out forwards}
 @keyframes cfly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
-/* Final */
+/* Leaderboard */
 .lb{background:rgba(0,0,0,.2);border:1px solid rgba(201,168,76,.12);border-radius:14px;overflow:hidden}
 .lb-row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
 .lb-row:last-child{border-bottom:none}
 .lb-row.winner{background:rgba(201,168,76,.08);border-left:3px solid var(--gold)}
 .lb-row.me{background:rgba(201,168,76,.04)}
-.lb-rank{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,168,76,.3);width:22px}
-.lb-rank.top{color:var(--gold)}
+.lb-rank{font-family:'Cormorant Garamond',serif;font-size:20px;color:rgba(201,168,76,.3);width:26px;text-align:center}
+.lb-rank.top{color:var(--gold);font-size:22px}
 .lb-chips{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
-.crown{font-size:40px;text-align:center;margin-bottom:8px;animation:bounce .8s ease infinite alternate}
-@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.crown{font-size:48px;text-align:center;margin-bottom:8px;animation:bounce 1s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0) scale(1)}to{transform:translateY(-10px) scale(1.05)}}
+
+/* Confirm dialog */
+.dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:24px;animation:fi .2s ease}
+.dialog{background:#1a3a2a;border:1px solid var(--gold);border-radius:18px;padding:24px;max-width:380px;width:100%}
+.dialog h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:8px}
+.dialog p{font-size:14px;color:rgba(245,240,232,.65);line-height:1.5;margin-bottom:20px}
+.dialog-btns{display:flex;gap:10px}
 </style>
 </head>
 <body>
+
+<!-- LOADING -->
+<div id="screen-loading" class="screen active">
+  <div class="spinner"></div>
+  <div style="color:rgba(245,240,232,.4);font-size:14px">Загрузка...</div>
+</div>
 
 <!-- LANDING -->
 <div id="screen-landing" class="screen">
   <div class="logo">Wine<br>Casino</div>
   <div class="logo-sub">Слепая дегустация · Ставки</div>
+  <div id="resume-box"></div>
   <div class="role-cards">
     <div class="role-card" onclick="go('screen-setup')">
       <div class="role-icon">🎩</div>
@@ -216,10 +246,10 @@ input:focus{border-color:var(--gold)}
     <div class="f-group">
       <div class="lbl" style="margin-bottom:8px">Стартовые фишки</div>
       <div class="pill-row" id="chips-pills">
-        <div class="pill" onclick="selPill(this,100)">100</div>
-        <div class="pill sel" onclick="selPill(this,200)">200</div>
-        <div class="pill" onclick="selPill(this,500)">500</div>
-        <div class="pill" onclick="selPill(this,1000)">1000</div>
+        <div class="pill" onclick="selChips(this,100)">100</div>
+        <div class="pill sel" onclick="selChips(this,200)">200</div>
+        <div class="pill" onclick="selChips(this,500)">500</div>
+        <div class="pill" onclick="selChips(this,1000)">1000</div>
       </div>
     </div>
     <div class="div"></div>
@@ -276,12 +306,13 @@ input:focus{border-color:var(--gold)}
   <div class="h-tabs">
     <div class="h-tab active" onclick="hTab('bets')">Ставки</div>
     <div class="h-tab" onclick="hTab('players')">Игроки</div>
+    <div class="h-tab" onclick="hTab('wines')">Вина</div>
   </div>
   <div class="h-content" id="h-content"></div>
   <div class="h-bottom">
     <button class="btn-ghost" style="flex:1" id="h-reveal-btn" onclick="revealRound()">🔓 Открыть ответы</button>
-    <button class="btn-ghost" style="flex:1" id="h-next-btn" onclick="nextRound()" disabled>Следующее вино →</button>
-    <button class="btn-ghost" onclick="endGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.55);padding:12px 10px">Финал</button>
+    <button class="btn-ghost" style="flex:1" id="h-next-btn" onclick="nextRound()" disabled>Дальше →</button>
+    <button class="btn-ghost" onclick="confirmEndGame()" style="border-color:rgba(192,57,43,.3);color:rgba(220,100,80,.55);padding:12px 10px">⏹</button>
   </div>
 </div>
 
@@ -289,348 +320,710 @@ input:focus{border-color:var(--gold)}
 <div id="screen-player" class="screen">
   <div class="p-header">
     <div class="p-name" id="p-name-hdr">Игрок</div>
-    <div class="p-chips">🪙 <span id="p-chips-hdr">200</span></div>
+    <div class="p-chips">🪙 <span id="p-chips-hdr">0</span></div>
   </div>
   <div class="p-content" id="p-content"></div>
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="dialog-container"></div>
 
 <script>
-const SB=supabase.createClient(
+// ════════════════════════════════════════════════
+//  SUPABASE
+// ════════════════════════════════════════════════
+const SB = supabase.createClient(
   'https://rxaeajvcxgcltfvarzau.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4YWVhanZjeGdjbHRmdmFyemF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNjQyMzMsImV4cCI6MjA5NDY0MDIzM30.v8eUv0EyCWIOfjrST7b7mVGADNCpLMIkHJTtRv4hdxo'
 );
 
-/* ── DEFAULT DATA ── */
-const DEF_CATS=[
-  {id:'region',name:'Часть света',mult:2,enabled:true,options:['Старый свет','Новый свет']},
-  {id:'country',name:'Страна',mult:3,enabled:true,options:['Франция','Италия','Испания','Германия','Австрия','Португалия','Греция','Венгрия','Грузия','Молдова','Россия','Армения','Швейцария','Румыния','США','Чили','Аргентина','Австралия','Новая Зеландия','ЮАР','Уругвай','Бразилия']},
-  {id:'grape',name:'Сорт винограда',mult:2,enabled:true,options:['Каберне Совиньон','Мерло','Пино Нуар','Сира/Шираз','Санджовезе','Темпранильо','Зинфандель','Мальбек','Каберне Фран','Гренаш','Неббиоло','Гаме','Шардоне','Совиньон Блан','Рислинг','Пино Гри','Гевюрцтраминер','Шенен Блан','Вионье','Мускат','Альбариньо','Грюнер Вельтлинер','Цимлянский Чёрный','Красностоп Золотовский','Кокур','Сибирьковый']},
-  {id:'aging',name:'Выдержка',mult:2,enabled:true,options:['Без выдержки','Сталь','Дуб (новый)','Дуб (старый)','Амфора','Бочка б/у']},
-  {id:'year',name:'Год урожая',mult:3,enabled:true,options:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023']}
+// ════════════════════════════════════════════════
+//  DEFAULT CATEGORIES & DATA
+// ════════════════════════════════════════════════
+const DEF_CATS = [
+  { id:'region', name:'Часть света', mult:2, enabled:true, options:['Старый свет','Новый свет'] },
+  { id:'country', name:'Страна', mult:3, enabled:true, options:['Франция','Италия','Испания','Германия','Австрия','Португалия','Греция','Венгрия','Грузия','Молдова','Россия','Армения','Швейцария','Румыния','США','Чили','Аргентина','Австралия','Новая Зеландия','ЮАР','Уругвай','Бразилия'] },
+  { id:'grape', name:'Сорт винограда', mult:2, enabled:true, options:['Каберне Совиньон','Мерло','Пино Нуар','Сира/Шираз','Санджовезе','Темпранильо','Зинфандель','Мальбек','Каберне Фран','Гренаш','Неббиоло','Гаме','Шардоне','Совиньон Блан','Рислинг','Пино Гри','Гевюрцтраминер','Шенен Блан','Вионье','Мускат','Альбариньо','Грюнер Вельтлинер','Цимлянский Чёрный','Красностоп Золотовский','Кокур','Сибирьковый'] },
+  { id:'aging', name:'Выдержка', mult:2, enabled:true, options:['Без выдержки','Сталь','Дуб (новый)','Дуб (старый)','Амфора','Бочка б/у'] },
+  { id:'year', name:'Год урожая', mult:3, enabled:true, options:['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023'] }
 ];
-const FLAGS={'Франция':'fr','Италия':'it','Испания':'es','Германия':'de','Австрия':'at','Португалия':'pt','Греция':'gr','Венгрия':'hu','Грузия':'ge','Молдова':'md','Россия':'ru','Армения':'am','Швейцария':'ch','Румыния':'ro','США':'us','Чили':'cl','Аргентина':'ar','Австралия':'au','Новая Зеландия':'nz','ЮАР':'za','Уругвай':'uy','Бразилия':'br'};
 
-/* ── STATE ── */
-const S={
-  // setup
-  cats:JSON.parse(JSON.stringify(DEF_CATS)),
-  wines:[],startChips:200,editIdx:null,
-  // session
-  role:null,code:null,pid:null,ch:null,htab:'bets',
-  // player per-round
-  draft:{},        // {catId:{sel,amt}}
-  pview:'lobby',   // lobby|betting|confirm|waiting|result|final
-  curRound:0,      // round player is currently viewing
+const FLAGS = {
+  'Франция':'fr','Италия':'it','Испания':'es','Германия':'de','Австрия':'at',
+  'Португалия':'pt','Греция':'gr','Венгрия':'hu','Грузия':'ge','Молдова':'md',
+  'Россия':'ru','Армения':'am','Швейцария':'ch','Румыния':'ro',
+  'США':'us','Чили':'cl','Аргентина':'ar','Австралия':'au',
+  'Новая Зеландия':'nz','ЮАР':'za','Уругвай':'uy','Бразилия':'br'
 };
 
-/* ── HELPERS ── */
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function e2(s){return String(s??'').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
-function selPill(el,v){document.querySelectorAll('#chips-pills .pill').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');S.startChips=v}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
-function avc(n){const c=['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];let h=0;for(const x of String(n))h=(h*31+x.charCodeAt(0))%c.length;return c[h]}
-function pl(n,a,b,c){if(n%10===1&&n%100!==11)return a;if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return b;return c}
-function genCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<6;i++)r+=c[~~(Math.random()*c.length)];return r}
-function genId(){return Math.random().toString(36).slice(2,11)}
+// ════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════
+const ST = {
+  // Setup data (organizer pre-game)
+  cats: JSON.parse(JSON.stringify(DEF_CATS)),
+  wines: [],
+  startChips: 200,
+  editIdx: null,
 
-async function dbGet(){const{data}=await SB.from('sessions').select('*').eq('code',S.code).single();return data}
-async function dbUpd(obj){await SB.from('sessions').update(obj).eq('code',S.code)}
+  // Session
+  role: null,         // 'host' | 'player'
+  code: null,
+  pid: null,          // player id
+  pname: null,
+  channel: null,
+  htab: 'bets',
 
-/* ── CATS EDITOR ── */
-function openCatsEditor(){renderCats();go('screen-cats')}
-function renderCats(){
-  document.getElementById('cats-editor').innerHTML=S.cats.map((c,i)=>`
-    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <input type="text" value="${esc(c.name)}" oninput="S.cats[${i}].name=this.value" style="flex:1;padding:10px 14px;font-size:14px;font-weight:500">
-        <span style="font-size:12px;color:rgba(245,240,232,.4)">×</span>
-        <input type="number" value="${c.mult}" min="1" max="10" oninput="S.cats[${i}].mult=+this.value" style="width:54px;text-align:center;padding:9px 8px">
-        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;font-size:13px;color:rgba(245,240,232,.5)">
-          <input type="checkbox" ${c.enabled?'checked':''} onchange="S.cats[${i}].enabled=this.checked" style="width:18px;height:18px;accent-color:var(--gold)"> Вкл
-        </label>
+  // Player-specific
+  draft: {},          // { catId: { sel, amt } } — unconfirmed bets for current round
+  curRound: 0,        // round we're currently displaying (for view reset detection)
+  inConfirm: false,   // is confirm overlay open
+  lastResultRound: 0, // last round where result was shown (prevents re-flash)
+
+  // Last seen state (for diffing)
+  lastSess: null
+};
+
+// ════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════
+function $(id) { return document.getElementById(id); }
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function attr(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+function genCode() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let r = '';
+  for (let i = 0; i < 6; i++) r += c[Math.floor(Math.random() * c.length)];
+  return r;
+}
+function genId() { return Math.random().toString(36).slice(2, 11); }
+function avc(n) {
+  const c = ['#7a1b2e','#2471a3','#1e8449','#634a1e','#5b3a8a','#1a6f6f','#9c4a00','#1a5a5a'];
+  let h = 0;
+  for (const x of String(n)) h = (h * 31 + x.charCodeAt(0)) % c.length;
+  return c[h];
+}
+function pl(n, one, few, many) {
+  if (n % 10 === 1 && n % 100 !== 11) return one;
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return few;
+  return many;
+}
+
+// LocalStorage session persistence
+const LS_KEY = 'wc_session_v4';
+function saveLS() {
+  if (!ST.code || !ST.role) return;
+  localStorage.setItem(LS_KEY, JSON.stringify({
+    role: ST.role,
+    code: ST.code,
+    pid: ST.pid,
+    pname: ST.pname
+  }));
+}
+function loadLS() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); }
+  catch(e) { return null; }
+}
+function clearLS() { localStorage.removeItem(LS_KEY); }
+
+// ════════════════════════════════════════════════
+//  SUPABASE OPS
+// ════════════════════════════════════════════════
+async function dbGet(code) {
+  const c = code || ST.code;
+  if (!c) return null;
+  const { data, error } = await SB.from('sessions').select('*').eq('code', c).maybeSingle();
+  if (error) console.error('dbGet error', error);
+  return data;
+}
+async function dbUpd(obj, code) {
+  const c = code || ST.code;
+  const { error } = await SB.from('sessions').update(obj).eq('code', c);
+  if (error) { console.error('dbUpd error', error); toast('Ошибка БД: ' + error.message); }
+}
+
+// ════════════════════════════════════════════════
+//  STARTUP — try resume
+// ════════════════════════════════════════════════
+async function startup() {
+  const saved = loadLS();
+  if (!saved) { go('screen-landing'); return; }
+  // Verify session still exists
+  const sess = await dbGet(saved.code);
+  if (!sess) {
+    clearLS();
+    go('screen-landing');
+    return;
+  }
+  if (sess.phase === 'finished' && saved.role === 'host') {
+    // Allow viewing the final screen but don't resume
+    // Actually just clear and go landing for host on finished
+    clearLS();
+    go('screen-landing');
+    return;
+  }
+  // Resume
+  ST.role = saved.role;
+  ST.code = saved.code;
+  ST.pid = saved.pid;
+  ST.pname = saved.pname;
+
+  if (ST.role === 'host') {
+    $('h-code').textContent = ST.code;
+    go('screen-host');
+    subHost();
+    refreshHost(sess);
+  } else {
+    // Verify player still exists in session
+    if (!sess.players || !sess.players[ST.pid]) {
+      // Rejoin under same name (if possible)
+      const newPid = genId();
+      const players = { ...sess.players, [newPid]: { name: ST.pname, chips: sess.start_chips } };
+      await dbUpd({ players }, ST.code);
+      ST.pid = newPid;
+      saveLS();
+    }
+    $('p-name-hdr').textContent = ST.pname;
+    go('screen-player');
+    subPlayer();
+    drawPlayer(await dbGet());
+  }
+}
+
+// Show "resume" hint on landing if there's a saved session that's still valid
+async function checkResume() {
+  const saved = loadLS();
+  if (!saved) return;
+  const sess = await dbGet(saved.code);
+  const box = $('resume-box');
+  if (!sess || sess.phase === 'finished') {
+    clearLS();
+    box.innerHTML = '';
+    return;
+  }
+  box.innerHTML = `
+    <div class="resume-bar">
+      <div class="resume-info">
+        <div class="role-line">${saved.role === 'host' ? '🎩 Организатор' : '🍷 Игрок'}</div>
+        <strong>${esc(saved.code)}</strong>
+        ${saved.role === 'player' ? ' · ' + esc(saved.pname) : ''}
       </div>
-      <div class="tags-wrap">${c.options.map((o,j)=>`<span class="tag">${esc(o)}<span class="x" onclick="rmOpt(${i},${j})">×</span></span>`).join('')}</div>
+      <button class="btn-sm" onclick="resumeSession()">Продолжить →</button>
+      <button class="btn-sm" onclick="clearResume()" style="background:transparent;color:rgba(245,240,232,.4)">✕</button>
+    </div>`;
+}
+function resumeSession() { startup(); }
+function clearResume() {
+  clearLS();
+  $('resume-box').innerHTML = '';
+}
+
+
+// ════════════════════════════════════════════════
+//  SETUP — categories editor
+// ════════════════════════════════════════════════
+function openCatsEditor() { renderCatsEditor(); go('screen-cats'); }
+function renderCatsEditor() {
+  $('cats-editor').innerHTML = ST.cats.map((c, i) => `
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <input type="text" value="${attr(c.name)}" oninput="ST.cats[${i}].name=this.value" style="flex:1;min-width:140px;padding:10px 14px;font-size:14px;font-weight:500">
+        <span style="font-size:12px;color:rgba(245,240,232,.4)">×</span>
+        <input type="number" value="${c.mult}" min="1" max="10" oninput="ST.cats[${i}].mult=+this.value" style="width:60px;text-align:center;padding:9px 8px">
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.5)">
+          <input type="checkbox" ${c.enabled ? 'checked' : ''} onchange="ST.cats[${i}].enabled=this.checked;renderWines()" style="width:18px;height:18px;accent-color:var(--gold)"> Вкл
+        </label>
+        <button class="btn-danger" onclick="rmCat(${i})" style="margin-left:auto">✕</button>
+      </div>
+      <div class="tags-wrap">${c.options.map((o, j) => `<span class="tag">${esc(o)}<span class="x" onclick="rmOpt(${i},${j})">×</span></span>`).join('')}</div>
       <div class="add-opt-row">
-        <input type="text" id="nopt-${i}" placeholder="Добавить вариант..." style="font-size:14px;padding:10px 14px">
+        <input type="text" id="nopt-${i}" placeholder="Добавить вариант..." style="font-size:14px;padding:10px 14px" onkeydown="if(event.key==='Enter')addOpt(${i})">
         <button class="btn-sm" onclick="addOpt(${i})">+</button>
       </div>
-    </div>`).join('')+`<button class="btn-sm" style="width:100%;padding:13px;margin-bottom:16px" onclick="addCat()">+ Добавить категорию</button>`;
+    </div>`).join('') +
+    `<button class="btn-sm" style="width:100%;padding:13px;margin-bottom:16px" onclick="addCat()">+ Добавить категорию</button>`;
 }
-function addOpt(i){const inp=document.getElementById('nopt-'+i);const v=inp.value.trim();if(!v)return;S.cats[i].options.push(v);inp.value='';renderCats()}
-function rmOpt(i,j){S.cats[i].options.splice(j,1);renderCats()}
-function addCat(){S.cats.push({id:'cat_'+Date.now(),name:'Новая категория',mult:2,enabled:true,options:[]});renderCats()}
+function addOpt(i) {
+  const inp = $(`nopt-${i}`);
+  const v = inp.value.trim();
+  if (!v) return;
+  ST.cats[i].options.push(v);
+  inp.value = '';
+  renderCatsEditor();
+}
+function rmOpt(i, j) {
+  ST.cats[i].options.splice(j, 1);
+  // Also remove this answer from any wines that had it
+  const optVal = ST.cats[i].options;
+  ST.wines.forEach(w => {
+    if (w.answers[ST.cats[i].id] && !optVal.includes(w.answers[ST.cats[i].id])) {
+      delete w.answers[ST.cats[i].id];
+    }
+  });
+  renderCatsEditor();
+}
+function addCat() {
+  ST.cats.push({ id: 'cat_' + Date.now(), name: 'Новая категория', mult: 2, enabled: true, options: [] });
+  renderCatsEditor();
+}
+function rmCat(i) {
+  if (!confirm('Удалить категорию "' + ST.cats[i].name + '"?')) return;
+  const catId = ST.cats[i].id;
+  ST.wines.forEach(w => { delete w.answers[catId]; });
+  ST.cats.splice(i, 1);
+  renderCatsEditor();
+  renderWines();
+}
 
-/* ── WINES ── */
-function addWine(){const i=S.wines.length;S.wines.push({id:'w'+Date.now(),name:'Вино №'+(i+1),answers:{}});renderWines();openWine(i)}
-function rmWine(i){S.wines.splice(i,1);renderWines()}
-function renderWines(){
-  const ec=S.cats.filter(c=>c.enabled);
-  document.getElementById('wines-list').innerHTML=S.wines.map((w,i)=>{
-    const chips=ec.map(c=>`<span class="answer-chip ${w.answers[c.id]?'set':''}">${esc(c.name)}: ${esc(w.answers[c.id]||'—')}</span>`).join('');
-    return`<div class="wine-item">
+function selChips(el, v) {
+  document.querySelectorAll('#chips-pills .pill').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  ST.startChips = v;
+}
+
+// ════════════════════════════════════════════════
+//  SETUP — wines
+// ════════════════════════════════════════════════
+function addWine() {
+  const i = ST.wines.length;
+  ST.wines.push({ id: 'w' + Date.now() + '_' + i, name: 'Вино №' + (i + 1), answers: {} });
+  renderWines();
+  openWine(i);
+}
+function rmWine(i) {
+  if (!confirm('Удалить вино "' + ST.wines[i].name + '"?')) return;
+  ST.wines.splice(i, 1);
+  renderWines();
+}
+function renderWines() {
+  const ec = ST.cats.filter(c => c.enabled);
+  const list = $('wines-list');
+  if (!list) return;
+  list.innerHTML = ST.wines.map((w, i) => {
+    const chips = ec.map(c => {
+      const v = w.answers[c.id];
+      return `<span class="answer-chip ${v ? 'set' : ''}">${esc(c.name)}: ${esc(v || '—')}</span>`;
+    }).join('');
+    return `<div class="wine-item">
       <div class="wine-item-head" onclick="openWine(${i})">
-        <div class="wine-num-badge">${i+1}</div>
-        <div style="flex:1;font-size:15px;font-weight:500">${esc(w.name)}</div>
+        <div class="wine-num-badge">${i + 1}</div>
+        <div style="flex:1;font-size:15px;font-weight:500;word-break:break-word">${esc(w.name)}</div>
         <button class="btn-danger" onclick="event.stopPropagation();rmWine(${i})">✕</button>
         <span style="font-size:18px;color:rgba(201,168,76,.4)">›</span>
       </div>
       <div class="wine-answers">${chips}</div>
     </div>`;
-  }).join('')||'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3);font-size:14px">Нажмите «+ Добавить вино»</div>';
-  const ok=S.wines.length>0&&S.wines.every(w=>S.cats.filter(c=>c.enabled).every(c=>w.answers[c.id]));
-  document.getElementById('start-btn').disabled=!ok;
+  }).join('') || '<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3);font-size:14px">Нажмите «+ Добавить вино»</div>';
+
+  const allFilled = ST.wines.length > 0 && ST.wines.every(w =>
+    ec.every(c => w.answers[c.id])
+  );
+  $('start-btn').disabled = !allFilled;
 }
-function openWine(i){
-  S.editIdx=i;
-  document.getElementById('wine-title').textContent='Вино №'+(i+1);
-  renderWineEditor();go('screen-wine');
+function openWine(i) {
+  ST.editIdx = i;
+  $('wine-title').textContent = 'Вино №' + (i + 1);
+  renderWineEditor();
+  go('screen-wine');
 }
-function renderWineEditor(){
-  const w=S.wines[S.editIdx],ec=S.cats.filter(c=>c.enabled);
-  document.getElementById('wine-body').innerHTML=`
-    <div class="f-group"><div class="lbl" style="margin-bottom:8px">Название</div><input type="text" value="${esc(w.name)}" oninput="S.wines[${S.editIdx}].name=this.value"></div>
+function renderWineEditor() {
+  const w = ST.wines[ST.editIdx];
+  const ec = ST.cats.filter(c => c.enabled);
+  $('wine-body').innerHTML = `
+    <div class="f-group">
+      <div class="lbl" style="margin-bottom:8px">Название</div>
+      <input type="text" value="${attr(w.name)}" oninput="ST.wines[${ST.editIdx}].name=this.value">
+    </div>
     <div class="div"></div>
-    <div class="lbl" style="margin-bottom:14px">Правильные ответы</div>
-    ${ec.map(c=>`
+    <div class="lbl" style="margin-bottom:14px">Правильные ответы по категориям</div>
+    ${ec.map((c, ci) => `
       <div style="margin-bottom:18px">
         <div style="font-size:14px;font-weight:500;margin-bottom:8px">${esc(c.name)} <span class="mult">×${c.mult}</span></div>
         <div style="display:flex;flex-wrap:wrap;gap:7px">
-          ${c.options.map(o=>`<div class="rev-opt ${w.answers[c.id]===o?'sel':''}" onclick="setAns('${e2(c.id)}','${e2(o)}')">${esc(o)}</div>`).join('')}
+          ${c.options.map((o, oi) =>
+            `<div class="rev-opt ${w.answers[c.id] === o ? 'sel' : ''}" onclick="setAns('${c.id}',${ci},${oi})">${esc(o)}</div>`
+          ).join('')}
         </div>
-      </div><div class="div"></div>`).join('')}
+      </div>`).join('<div class="div"></div>')}
+    <div style="height:8px"></div>
     <button class="btn-gold" onclick="saveWineBack()">Сохранить →</button>`;
 }
-function setAns(cid,val){S.wines[S.editIdx].answers[cid]=val;renderWineEditor()}
-function saveWineBack(){go('screen-setup');renderWines()}
+function setAns(catId, ci, oi) {
+  const val = ST.cats.find(c => c.id === catId).options[oi];
+  ST.wines[ST.editIdx].answers[catId] = val;
+  renderWineEditor();
+}
+function saveWineBack() {
+  go('screen-setup');
+  renderWines();
+}
 
-/* ── CREATE SESSION ── */
-async function createSession(){
-  const name=document.getElementById('sess-name').value.trim()||'Wine Casino';
-  const code=genCode();
-  const{error}=await SB.from('sessions').insert({
-    code,name,
-    cats:S.cats.filter(c=>c.enabled),
-    wines:S.wines,
-    start_chips:S.startChips,
-    current_round:1,
-    phase:'betting',   // betting | revealed | finished
-    players:{},
-    bets:{},           // {round:{pid:{catId:{sel,amt}}}}
-    revealed:{}        // {round:true}  — flag: all answers revealed for round
-  });
-  if(error){toast('Ошибка: '+error.message);return}
-  S.role='host';S.code=code;
-  document.getElementById('h-code').textContent=code;
+// ════════════════════════════════════════════════
+//  CREATE SESSION
+// ════════════════════════════════════════════════
+async function createSession() {
+  const name = $('sess-name').value.trim() || 'Wine Casino';
+  const code = genCode();
+  const payload = {
+    code, name,
+    cats: ST.cats.filter(c => c.enabled),
+    wines: ST.wines,
+    start_chips: ST.startChips,
+    current_round: 1,
+    phase: 'betting',
+    players: {},
+    bets: {},
+    revealed: {}
+  };
+  const { error } = await SB.from('sessions').insert(payload);
+  if (error) { toast('Ошибка: ' + error.message); return; }
+  ST.role = 'host';
+  ST.code = code;
+  saveLS();
+  $('h-code').textContent = code;
   go('screen-host');
   subHost();
-  await refreshHost();
+  refreshHost();
 }
 
-/* ── JOIN ── */
-async function joinSession(){
-  const code=document.getElementById('join-code').value.trim().toUpperCase();
-  const name=document.getElementById('join-name').value.trim();
-  if(code.length<4){toast('Введи код');return}
-  if(!name){toast('Введи имя');return}
-  const{data:sess,error}=await SB.from('sessions').select('*').eq('code',code).single();
-  if(error||!sess){toast('Сессия не найдена');return}
-  if(sess.phase==='finished'){toast('Игра завершена');return}
-  const pid=genId();
-  const players={...sess.players,[pid]:{name,chips:sess.start_chips}};
-  await SB.from('sessions').update({players}).eq('code',code);
-  S.role='player';S.code=code;S.pid=pid;S.draft={};S.curRound=0;
-  document.getElementById('p-name-hdr').textContent=name;
+// ════════════════════════════════════════════════
+//  JOIN SESSION
+// ════════════════════════════════════════════════
+async function joinSession() {
+  const code = $('join-code').value.trim().toUpperCase();
+  const name = $('join-name').value.trim();
+  if (code.length < 4) { toast('Введи код'); return; }
+  if (!name) { toast('Введи имя'); return; }
+  const sess = await dbGet(code);
+  if (!sess) { toast('Сессия не найдена'); return; }
+  if (sess.phase === 'finished') { toast('Игра уже завершена'); return; }
+  const pid = genId();
+  const players = { ...sess.players, [pid]: { name, chips: sess.start_chips } };
+  await dbUpd({ players }, code);
+  ST.role = 'player';
+  ST.code = code;
+  ST.pid = pid;
+  ST.pname = name;
+  ST.draft = {};
+  ST.curRound = 0;
+  ST.lastResultRound = 0;
+  saveLS();
+  $('p-name-hdr').textContent = name;
   go('screen-player');
   subPlayer();
-  drawPlayer(sess);
+  drawPlayer(await dbGet());
 }
 
-/* ── REALTIME ── */
-function subHost(){
-  if(S.ch)SB.removeChannel(S.ch);
-  S.ch=SB.channel('h_'+S.code)
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+S.code},p=>refreshHost(p.new))
+
+// ════════════════════════════════════════════════
+//  REALTIME SUBSCRIPTIONS
+// ════════════════════════════════════════════════
+function subHost() {
+  if (ST.channel) SB.removeChannel(ST.channel);
+  ST.channel = SB.channel('h_' + ST.code)
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'sessions', filter: 'code=eq.' + ST.code },
+      p => refreshHost(p.new))
     .subscribe();
 }
-function subPlayer(){
-  if(S.ch)SB.removeChannel(S.ch);
-  S.ch=SB.channel('p_'+S.code+'_'+S.pid)
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'sessions',filter:'code=eq.'+S.code},p=>drawPlayer(p.new))
+function subPlayer() {
+  if (ST.channel) SB.removeChannel(ST.channel);
+  ST.channel = SB.channel('p_' + ST.code + '_' + ST.pid)
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'sessions', filter: 'code=eq.' + ST.code },
+      p => drawPlayer(p.new))
     .subscribe();
 }
 
-/* ══════════════════════════════════════════
-   HOST
-══════════════════════════════════════════ */
-async function refreshHost(sess){
-  if(!sess)sess=await dbGet();
-  if(!sess)return;
-  const r=sess.current_round,total=sess.wines.length;
-  document.getElementById('h-round-pill').textContent='Вино '+r+'/'+total;
-  const isRevealed=!!(sess.revealed||{})[r];
-  document.getElementById('h-reveal-btn').disabled=isRevealed;
-  document.getElementById('h-next-btn').disabled=!isRevealed;
-  document.getElementById('h-next-btn').textContent=r>=total?'Завершить игру →':'Следующее вино →';
-  renderHTab(sess);
+// ════════════════════════════════════════════════
+//  HOST UI
+// ════════════════════════════════════════════════
+async function refreshHost(sess) {
+  if (!sess) sess = await dbGet();
+  if (!sess) return;
+  ST.lastSess = sess;
+  const r = sess.current_round;
+  const total = sess.wines.length;
+  $('h-round-pill').textContent = 'Вино ' + r + '/' + total;
+  const isRevealed = !!(sess.revealed || {})[r];
+  $('h-reveal-btn').disabled = isRevealed;
+  $('h-next-btn').disabled = !isRevealed;
+  $('h-next-btn').textContent = r >= total ? 'Завершить →' : 'Дальше →';
+  renderHostTab(sess);
 }
 
-function hTab(t){
-  S.htab=t;
-  document.querySelectorAll('.h-tab').forEach(el=>el.classList.toggle('active',el.getAttribute('onclick')==="hTab('"+t+"')"));
-  dbGet().then(sess=>{if(sess)renderHTab(sess)});
-}
-
-function renderHTab(sess){
-  document.getElementById('h-content').innerHTML=S.htab==='bets'?hBetsHTML(sess):hPlayersHTML(sess);
-}
-
-function hBetsHTML(sess){
-  const r=sess.current_round,bets=(sess.bets||{})[r]||{},players=sess.players||{},cats=sess.cats||[];
-  const wine=sess.wines[r-1];
-  const isRevealed=!!(sess.revealed||{})[r];
-  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:2px">${esc(wine?.name||'Вино №'+r)}</div>
-    <div class="lbl" style="margin-bottom:12px">${isRevealed?'✓ Ответы открыты':'Ставки: '+Object.keys(bets).length+' из '+Object.keys(players).length}</div>
-    <div style="overflow-x:auto"><table class="bets-table"><thead><tr><th>Игрок</th><th>🪙</th>`;
-  cats.forEach(c=>h+=`<th>${esc(c.name)} <span class="mult">×${c.mult}</span></th>`);
-  h+='</tr></thead><tbody>';
-  Object.entries(players).sort((a,b)=>b[1].chips-a[1].chips).forEach(([pid,p])=>{
-    const pb=bets[pid]||{};
-    h+=`<tr><td style="font-size:13px;white-space:nowrap">${esc(p.name)}</td><td style="font-family:'Cormorant Garamond',serif;color:var(--gold)">${p.chips}</td>`;
-    cats.forEach(cat=>{
-      const bet=pb[cat.id];
-      if(!bet){h+=`<td style="color:rgba(245,240,232,.2)">—</td>`;return}
-      let mark='';
-      if(isRevealed){
-        const ans=wine.answers[cat.id];
-        mark=bet.sel===ans?'<span style="color:#2ecc71"> ✓</span>':'<span style="color:#e74c3c"> ✗</span>';
-      }
-      h+=`<td><div style="font-size:12px">${esc(bet.sel)}${mark}</div><div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold)">🪙${bet.amt}</div></td>`;
-    });
-    h+='</tr>';
+function hTab(t) {
+  ST.htab = t;
+  document.querySelectorAll('.h-tab').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('onclick') === "hTab('" + t + "')");
   });
-  return h+'</tbody></table></div>';
+  if (ST.lastSess) renderHostTab(ST.lastSess);
+  else dbGet().then(s => { if (s) { ST.lastSess = s; renderHostTab(s); } });
 }
 
-function hPlayersHTML(sess){
-  const pl=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  if(!pl.length)return'<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
-  return'<div>'+pl.map(([id,p],i)=>`<div class="player-row">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,168,76,.3);width:20px">${i+1}</div>
-    <div class="avatar" style="background:${avc(p.name)}">${p.name[0].toUpperCase()}</div>
-    <div style="flex:1;font-size:15px">${esc(p.name)}</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">🪙 ${p.chips}</div>
-  </div>`).join('')+'</div>';
+function renderHostTab(sess) {
+  const el = $('h-content');
+  if (ST.htab === 'bets') el.innerHTML = hostBetsHTML(sess);
+  else if (ST.htab === 'players') el.innerHTML = hostPlayersHTML(sess);
+  else el.innerHTML = hostWinesHTML(sess);
 }
 
-/* HOST ACTIONS */
-async function revealRound(){
-  // Ответы уже заданы до игры — просто помечаем раунд как revealed и начисляем фишки
-  const sess=await dbGet();if(!sess)return;
-  const r=sess.current_round,wine=sess.wines[r-1],cats=sess.cats||[];
-  const players={...sess.players};
-  const bets=(sess.bets||{})[r]||{};
-  // Settle bets
-  Object.entries(bets).forEach(([pid,pb])=>{
-    if(!players[pid])return;
-    cats.forEach(cat=>{
-      const bet=pb[cat.id];if(!bet)return;
-      if(bet.sel===wine.answers[cat.id]){
-        players[pid].chips+=bet.amt*cat.mult; // return stake × mult
+function hostBetsHTML(sess) {
+  const r = sess.current_round;
+  const bets = (sess.bets || {})[r] || {};
+  const players = sess.players || {};
+  const cats = sess.cats || [];
+  const wine = sess.wines[r - 1];
+  const isRevealed = !!(sess.revealed || {})[r];
+
+  const pCount = Object.keys(players).length;
+  const bCount = Object.keys(bets).length;
+
+  let h = `<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:2px">${esc(wine?.name || 'Вино №' + r)}</div>
+    <div class="lbl" style="margin-bottom:12px">${isRevealed ? '✓ Ответы открыты' : 'Ставки: ' + bCount + '/' + pCount}</div>`;
+
+  if (pCount === 0) {
+    return h + '<div style="text-align:center;padding:40px 0;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
+  }
+
+  h += '<div style="overflow-x:auto"><table class="bets-table"><thead><tr><th>Игрок</th><th>🪙</th>';
+  cats.forEach(c => { h += `<th>${esc(c.name)} <span class="mult">×${c.mult}</span></th>`; });
+  h += '</tr></thead><tbody>';
+
+  Object.entries(players).sort((a, b) => b[1].chips - a[1].chips).forEach(([pid, p]) => {
+    const pb = bets[pid] || {};
+    h += `<tr><td style="font-size:13px;white-space:nowrap">${esc(p.name)}</td>
+      <td style="font-family:'Cormorant Garamond',serif;color:var(--gold)">${p.chips}</td>`;
+    cats.forEach(cat => {
+      const bet = pb[cat.id];
+      if (!bet) {
+        h += `<td style="color:rgba(245,240,232,.2)">—</td>`;
+        return;
       }
-      // lost bets are already deducted when placed — nothing to do
+      let mark = '';
+      if (isRevealed) {
+        const ans = wine.answers[cat.id];
+        mark = bet.sel === ans
+          ? '<span style="color:var(--win)"> ✓</span>'
+          : '<span style="color:var(--lose)"> ✗</span>';
+      }
+      h += `<td>
+        <div style="font-size:12px">${esc(bet.sel)}${mark}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:12px;color:var(--gold)">🪙${bet.amt}</div>
+      </td>`;
     });
+    h += '</tr>';
   });
-  const revealed={...sess.revealed,[r]:true};
-  await dbUpd({players,revealed,phase:'revealed'});
-  toast('✓ Ответы открыты, фишки начислены');
+  return h + '</tbody></table></div>';
 }
 
-async function nextRound(){
-  const sess=await dbGet();if(!sess)return;
-  if(sess.current_round>=sess.wines.length){endGame();return}
-  await dbUpd({current_round:sess.current_round+1,phase:'betting'});
+function hostPlayersHTML(sess) {
+  const players = Object.entries(sess.players || {}).sort((a, b) => b[1].chips - a[1].chips);
+  if (!players.length) return '<div style="text-align:center;padding:32px;color:rgba(245,240,232,.3)">Ожидание игроков...</div>';
+  return '<div>' + players.map(([id, p], i) => `
+    <div class="player-row">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:rgba(201,168,76,.3);width:20px">${i + 1}</div>
+      <div class="avatar" style="background:${avc(p.name)}">${esc(p.name[0].toUpperCase())}</div>
+      <div style="flex:1;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">🪙 ${p.chips}</div>
+    </div>`).join('') + '</div>';
 }
 
-async function endGame(){
-  await dbUpd({phase:'finished'});
+function hostWinesHTML(sess) {
+  const cur = sess.current_round;
+  return '<div class="lbl" style="margin-bottom:12px">Все вина (только просмотр)</div>' +
+    (sess.wines || []).map((w, i) => {
+      const isRevealed = !!(sess.revealed || {})[i + 1];
+      const isCurrent = (i + 1) === cur;
+      return `<div class="wine-item" style="${isCurrent ? 'border-color:var(--gold)' : ''}">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="wine-num-badge">${i + 1}</div>
+          <div style="flex:1;font-size:14px">${esc(w.name)}</div>
+          ${isCurrent ? '<span class="round-pill">Сейчас</span>' : isRevealed ? '<span style="font-size:12px;color:var(--win)">✓ Открыто</span>' : '<span style="font-size:12px;color:rgba(245,240,232,.3)">Ожидание</span>'}
+        </div>
+        <div class="wine-answers">
+          ${(sess.cats || []).map(c => `<span class="answer-chip set">${esc(c.name)}: ${esc(w.answers[c.id] || '—')}</span>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// HOST ACTIONS
+async function revealRound() {
+  const sess = await dbGet();
+  if (!sess) return;
+  const r = sess.current_round;
+  if ((sess.revealed || {})[r]) { toast('Уже открыто'); return; }
+  const wine = sess.wines[r - 1];
+  const cats = sess.cats || [];
+  const players = { ...sess.players };
+  const bets = (sess.bets || {})[r] || {};
+
+  // Settle bets — for each player, for each cat bet, if correct, add amt*mult
+  Object.entries(bets).forEach(([pid, pb]) => {
+    if (!players[pid]) return;
+    let earned = 0;
+    cats.forEach(cat => {
+      const bet = pb[cat.id];
+      if (!bet) return;
+      if (bet.sel === wine.answers[cat.id]) {
+        earned += bet.amt * cat.mult;
+      }
+    });
+    players[pid] = { ...players[pid], chips: players[pid].chips + earned };
+  });
+
+  const revealed = { ...sess.revealed, [r]: true };
+  await dbUpd({ players, revealed, phase: 'revealed' });
+  toast('✓ Ответы открыты');
+}
+
+async function nextRound() {
+  const sess = await dbGet();
+  if (!sess) return;
+  if (sess.current_round >= sess.wines.length) {
+    return endGame();
+  }
+  await dbUpd({ current_round: sess.current_round + 1, phase: 'betting' });
+}
+
+function confirmEndGame() {
+  showDialog({
+    title: 'Завершить игру?',
+    text: 'Все игроки увидят финальную таблицу. Это действие нельзя отменить.',
+    confirmText: 'Завершить',
+    confirmDanger: true,
+    onConfirm: endGame
+  });
+}
+
+async function endGame() {
+  await dbUpd({ phase: 'finished' });
   toast('🏆 Игра завершена!');
 }
 
-async function copyCode(){
-  try{await navigator.clipboard.writeText(S.code)}catch(e){}
-  toast('Код: '+S.code);
+async function copyCode() {
+  try { await navigator.clipboard.writeText(ST.code); } catch(e) {}
+  toast('Код: ' + ST.code);
 }
 
-/* ══════════════════════════════════════════
-   PLAYER
-══════════════════════════════════════════ */
-function drawPlayer(sess){
-  if(!sess)return;
-  const me=(sess.players||{})[S.pid];
-  if(me)document.getElementById('p-chips-hdr').textContent=me.chips;
-  const r=sess.current_round;
-  const myBets=((sess.bets||{})[r]||{})[S.pid]||null;
-  const isRevealed=!!(sess.revealed||{})[r];
 
-  if(sess.phase==='finished'){pView(finalHTML(sess));pClass('');return}
+// ════════════════════════════════════════════════
+//  PLAYER UI — core dispatcher
+// ════════════════════════════════════════════════
+function drawPlayer(sess) {
+  if (!sess) return;
+  ST.lastSess = sess;
+  const me = (sess.players || {})[ST.pid];
+  if (me) $('p-chips-hdr').textContent = me.chips;
 
-  // New round started — reset draft and redraw
-  if(r!==S.curRound){
-    S.draft={};
-    S.curRound=r;
-    S.pview='betting';
-    // remove any lingering confirm overlay
-    const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
-  }
-
-  // Override view based on server state
-  if(isRevealed&&myBets){
-    if(S.pview!=='result'){S.pview='result';showResult(sess,myBets,r,me)}
-    else updateResult(sess,myBets,r,me);
+  // Finished
+  if (sess.phase === 'finished') {
+    closeConfirmOverlay();
+    pView(finalHTML(sess), '');
     return;
   }
-  if(isRevealed&&!myBets){
-    // Revealed but player never bet — show result with no-bets
-    if(S.pview!=='result'){S.pview='result';showResult(sess,myBets,r,me)}
+
+  const r = sess.current_round;
+  const myBets = ((sess.bets || {})[r] || {})[ST.pid] || null;
+  const isRevealed = !!(sess.revealed || {})[r];
+
+  // Round change: reset draft, close any overlays
+  if (r !== ST.curRound) {
+    ST.draft = {};
+    ST.curRound = r;
+    closeConfirmOverlay();
+    // Force re-render based on new round state
+  }
+
+  // State machine — order matters!
+  // 1. Revealed → show result (until next round)
+  if (isRevealed) {
+    showResult(sess, myBets, r, me);
     return;
   }
-  if(myBets&&!isRevealed){
-    // Bets confirmed, waiting
-    if(S.pview!=='waiting'){S.pview='waiting';showWaiting(sess,myBets,r)}
-    else refreshWaitingOthers(sess,r);
+  // 2. Bets confirmed, waiting → felt screen
+  if (myBets) {
+    closeConfirmOverlay();
+    showWaiting(sess, myBets, r, me);
     return;
   }
-  // Betting phase — only render if not on confirm screen
-  if(S.pview==='confirm')return;
-  if(S.pview!=='betting'){S.pview='betting'}
-  showBetting(sess,me,r);
+  // 3. Confirm overlay open → don't redraw underlying, just refresh confirm if needed
+  if (ST.inConfirm) {
+    // Update available chips in confirm screen if needed (not critical)
+    return;
+  }
+  // 4. Default: betting screen
+  showBetting(sess, me, r);
 }
 
-/* ── PLAYER VIEWS ── */
-function pView(html,extraClass=''){
-  const el=document.getElementById('p-content');
-  el.className='p-content';
-  if(extraClass)el.classList.add(extraClass);
-  el.innerHTML=`<div class="p-view">${html}</div>`;
+function pView(html, extraClass) {
+  const el = $('p-content');
+  el.className = 'p-content' + (extraClass ? ' ' + extraClass : '');
+  el.innerHTML = `<div class="p-view">${html}</div>`;
 }
-function pClass(cls){document.getElementById('p-content').className='p-content'+(cls?' '+cls:'')}
 
-function showBetting(sess,me,r){
-  const cats=sess.cats||[],wine=sess.wines[r-1];
-  let h=`<div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);margin-bottom:4px">${esc(wine?.name||'Вино №'+r)}</div>
-    <div class="lbl" style="margin-bottom:16px">Раунд ${r} из ${sess.wines.length}</div>`;
-  cats.forEach(cat=>{
-    const bs=S.draft[cat.id]||{sel:null,amt:0};
-    h+=`<div class="cat-block${bs.sel?' done':''}" id="cb-${cat.id}">
+// Calculate available chips for player (real-time during betting)
+function availChips(me) {
+  if (!me) return 0;
+  const draftTotal = Object.values(ST.draft).reduce((s, b) => s + (b.amt || 0), 0);
+  return me.chips - draftTotal;
+}
+
+// ════════════════════════════════════════════════
+//  PLAYER — BETTING SCREEN
+// ════════════════════════════════════════════════
+function showBetting(sess, me, r) {
+  const cats = sess.cats || [];
+  const wine = sess.wines[r - 1];
+  const myChips = me ? me.chips : 0;
+
+  let h = `<div class="avail-bar">
+    <div>
+      <div class="avail-label">Доступно</div>
+      <div class="avail-num" id="avail-num">🪙 ${myChips}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="avail-label">Вино ${r}/${sess.wines.length}</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gl)">${esc(wine?.name || '')}</div>
+    </div>
+  </div>`;
+
+  if (myChips === 0) {
+    h += '<div style="background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;font-size:14px;color:#e87c6e">У вас закончились фишки. Дождитесь следующих раундов или конца игры.</div>';
+  } else {
+    h += '<div class="lbl" style="margin-bottom:12px">Выберите ответ и сумму ставки в нужных категориях. Категории можно пропускать.</div>';
+  }
+
+  cats.forEach(cat => {
+    const bs = ST.draft[cat.id] || { sel: null, amt: 0 };
+    const isReady = bs.sel && bs.amt > 0;
+    h += `<div class="cat-block${isReady ? ' done' : ''}" id="cb-${cat.id}">
       <div class="cat-block-head">
         <div class="cat-title">${esc(cat.name)} <span class="mult">×${cat.mult}</span></div>
-        <div id="cbv-${cat.id}" style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">${bs.sel?'🪙'+bs.amt:'—'}</div>
+        <div class="cat-stake-display" id="cbv-${cat.id}">${isReady ? '🪙' + bs.amt : (bs.sel ? bs.sel : '—')}</div>
       </div>
       <div class="opts-grid">
-        ${cat.options.map(o=>{const f=FLAGS[o];return`<div class="opt${bs.sel===o?' sel':''}" data-c="${e2(cat.id)}" data-o="${e2(o)}">${f?`<img src="https://flagcdn.com/w40/${f}.png" alt="">`:''} ${esc(o)}</div>`}).join('')}
+        ${cat.options.map(o => {
+          const f = FLAGS[o];
+          const sel = bs.sel === o ? ' sel' : '';
+          return `<div class="opt${sel}" data-c="${cat.id}" data-o="${attr(o)}">${f ? `<img src="https://flagcdn.com/w40/${f}.png" alt="">` : ''} ${esc(o)}</div>`;
+        }).join('')}
       </div>
       <div class="chips-row">
         <div class="chip c1" data-c="${cat.id}" data-v="1">1</div>
@@ -640,275 +1033,460 @@ function showBetting(sess,me,r){
         <div class="chip c50" data-c="${cat.id}" data-v="50">50</div>
       </div>
       <div class="chip-foot">
-        <div class="stake-disp" id="sd-${cat.id}">🪙${bs.amt}</div>
-        <button class="btn-clr" onclick="clearDraft('${e2(cat.id)}')">Сброс</button>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">🪙 <span id="sd-${cat.id}">${bs.amt}</span></div>
+        <button class="btn-clr" onclick="clearCatDraft('${cat.id}')">Сброс</button>
       </div>
     </div>`;
   });
-  h+=`<button class="btn-gold" id="p-place-btn" onclick="openConfirm()" style="margin-top:4px" disabled>Поставить →</button>`;
-  pView(h);
-  // handlers
-  document.querySelectorAll('.opt').forEach(el=>{
-    el.onclick=()=>{
-      const cid=el.dataset.c,o=el.dataset.o;
-      if(!S.draft[cid])S.draft[cid]={sel:null,amt:0};
-      S.draft[cid].sel=o;
-      document.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(x=>x.classList.toggle('sel',x.dataset.o===o));
-      updCB(cid);
+
+  h += `<button class="btn-gold" id="place-btn" onclick="openConfirm()" disabled style="margin-top:8px">Поставить →</button>`;
+
+  pView(h, '');
+
+  // Attach handlers
+  document.querySelectorAll('.opt').forEach(el => {
+    el.onclick = () => {
+      const cid = el.dataset.c, opt = el.dataset.o;
+      if (!ST.draft[cid]) ST.draft[cid] = { sel: null, amt: 0 };
+      ST.draft[cid].sel = opt;
+      document.querySelectorAll(`.opt[data-c="${cid}"]`).forEach(o =>
+        o.classList.toggle('sel', o.dataset.o === opt)
+      );
+      updateCatBlock(cid);
     };
   });
-  document.querySelectorAll('.chip').forEach(el=>{
-    el.onclick=()=>{
-      const cid=el.dataset.c,v=+el.dataset.v;
-      if(!S.draft[cid])S.draft[cid]={sel:null,amt:0};
-      const myChips=me?me.chips:0;
-      const totalDraft=Object.values(S.draft).reduce((s,b)=>s+(b.amt||0),0);
-      const thisDraft=S.draft[cid].amt||0;
-      if(thisDraft+v+(totalDraft-thisDraft)>myChips){toast('Недостаточно фишек');return}
-      S.draft[cid].amt+=v;
-      updCB(cid);
+
+  document.querySelectorAll('.chip').forEach(el => {
+    el.onclick = () => {
+      if (el.classList.contains('disabled')) return;
+      const cid = el.dataset.c;
+      const v = +el.dataset.v;
+      if (!ST.draft[cid]) ST.draft[cid] = { sel: null, amt: 0 };
+      const me2 = (ST.lastSess?.players || {})[ST.pid];
+      const avail = availChips(me2);
+      if (v > avail) {
+        toast('Недостаточно фишек (доступно ' + avail + ')');
+        return;
+      }
+      ST.draft[cid].amt += v;
+      updateCatBlock(cid);
     };
   });
-  updPlaceBtn();
+
+  updatePlaceBtn();
+  updateChipsAvailability();
 }
 
-function updCB(cid){
-  const bs=S.draft[cid]||{sel:null,amt:0};
-  const sd=document.getElementById('sd-'+cid);if(sd)sd.textContent='🪙'+bs.amt;
-  const cbv=document.getElementById('cbv-'+cid);if(cbv)cbv.textContent=bs.sel?'🪙'+bs.amt:'—';
-  const cb=document.getElementById('cb-'+cid);if(cb)cb.classList.toggle('done',!!bs.sel);
-  updPlaceBtn();
-}
-function updPlaceBtn(){
-  const btn=document.getElementById('p-place-btn');
-  if(btn)btn.disabled=!Object.values(S.draft).some(b=>b.sel&&b.amt>0);
-}
-function clearDraft(cid){
-  S.draft[cid]={sel:null,amt:0};
-  dbGet().then(sess=>{if(sess)showBetting(sess,(sess.players||{})[S.pid],sess.current_round)});
+function updateCatBlock(cid) {
+  const bs = ST.draft[cid] || { sel: null, amt: 0 };
+  const sd = $('sd-' + cid);
+  if (sd) sd.textContent = bs.amt;
+  const cbv = $('cbv-' + cid);
+  if (cbv) cbv.textContent = (bs.sel && bs.amt > 0) ? '🪙' + bs.amt : (bs.sel ? bs.sel : '—');
+  const cb = $('cb-' + cid);
+  if (cb) cb.classList.toggle('done', !!(bs.sel && bs.amt > 0));
+  updatePlaceBtn();
+  updateChipsAvailability();
+  updateAvailBar();
 }
 
-/* ── CONFIRM OVERLAY ── */
-function openConfirm(){
-  S.pview='confirm';
-  dbGet().then(sess=>{
-    if(!sess)return;
-    const cats=sess.cats||[],r=sess.current_round,wine=sess.wines[r-1];
-    const bets=Object.entries(S.draft).filter(([,b])=>b.sel&&b.amt>0);
-    const total=bets.reduce((s,[,b])=>s+b.amt,0);
-    const cards=bets.map(([cid,b])=>{
-      const cat=cats.find(c=>c.id===cid);
-      return`<div class="confirm-card">
-        <div class="confirm-cat">
-          <div class="confirm-cat-lbl">${esc(cat?.name||cid)}</div>
-          <div class="confirm-cat-sel">${esc(b.sel)}</div>
-          <div class="confirm-cat-mult">×${cat?.mult||2} при угадывании</div>
-        </div>
-        <div class="confirm-amt">🪙${b.amt}</div>
-      </div>`;
-    }).join('');
-    // Inject overlay into p-content
-    const el=document.getElementById('p-content');
-    const ov=document.createElement('div');
-    ov.id='confirm-ov';
-    ov.className='overlay';
-    ov.innerHTML=`
-      <div class="page-header">
-        <button class="back" onclick="closeConfirm()">← Изменить</button>
-        <div class="page-title">${esc(wine?.name||'Вино №'+r)}</div>
-      </div>
-      <div style="padding:16px 16px calc(100px + var(--safe))">
-        <div class="lbl" style="margin-bottom:14px">Ваши ставки</div>
-        ${cards}
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid rgba(201,168,76,.12);margin-top:4px">
-          <span style="font-size:14px;color:rgba(245,240,232,.5)">Итого ставка</span>
-          <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)">🪙${total}</span>
-        </div>
-      </div>
-      <div class="overlay-footer">
-        <button class="btn-ghost" style="flex:1" onclick="closeConfirm()">← Изменить</button>
-        <button class="btn-gold" style="flex:2" onclick="confirmBets()">Подтвердить ✓</button>
-      </div>`;
-    document.body.appendChild(ov);
+function updatePlaceBtn() {
+  const btn = $('place-btn');
+  if (!btn) return;
+  // At least one category must have BOTH sel AND amt > 0
+  const ok = Object.values(ST.draft).some(b => b.sel && b.amt > 0);
+  btn.disabled = !ok;
+}
+
+function updateAvailBar() {
+  const el = $('avail-num');
+  if (!el) return;
+  const me = (ST.lastSess?.players || {})[ST.pid];
+  const avail = availChips(me);
+  el.textContent = '🪙 ' + avail;
+  el.classList.toggle('low', avail === 0);
+}
+
+function updateChipsAvailability() {
+  const me = (ST.lastSess?.players || {})[ST.pid];
+  const avail = availChips(me);
+  document.querySelectorAll('.chip').forEach(el => {
+    const v = +el.dataset.v;
+    el.classList.toggle('disabled', v > avail);
   });
 }
-function closeConfirm(){
-  const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
-  S.pview='betting';
-  dbGet().then(sess=>{if(sess)showBetting(sess,(sess.players||{})[S.pid],sess.current_round)});
-}
-async function confirmBets(){
-  const sess=await dbGet();if(!sess)return;
-  const me=(sess.players||{})[S.pid];if(!me)return;
-  const r=sess.current_round;
-  const bets={...sess.bets};
-  if(!bets[r])bets[r]={};
-  bets[r][S.pid]={};
-  let spent=0;
-  Object.entries(S.draft).forEach(([cid,b])=>{
-    if(b.sel&&b.amt>0){bets[r][S.pid][cid]={sel:b.sel,amt:b.amt};spent+=b.amt}
-  });
-  const players={...sess.players};
-  players[S.pid]={...me,chips:me.chips-spent};
-  await dbUpd({bets,players});
-  const ov=document.getElementById('confirm-ov');if(ov)ov.remove();
-  S.pview='waiting';
-  const newSess=await dbGet();
-  if(newSess)showWaiting(newSess,bets[r][S.pid],r);
+
+function clearCatDraft(cid) {
+  if (ST.draft[cid]) {
+    delete ST.draft[cid];
+  }
+  // Re-render this block from scratch
+  const me = (ST.lastSess?.players || {})[ST.pid];
+  if (ST.lastSess) showBetting(ST.lastSess, me, ST.lastSess.current_round);
 }
 
-/* ── WAITING (FELT) ── */
-function showWaiting(sess,myBets,r){
-  const wine=sess.wines[r-1];
-  const myCards=Object.entries(myBets).map(([cid,b])=>{
-    const cat=(sess.cats||[]).find(c=>c.id===cid);
-    return`<div class="felt-bet-card">
-      <div class="felt-cat-lbl">${esc(cat?.name||cid)}</div>
-      <div class="felt-cat-sel">${esc(b.sel)}</div>
-      <div class="felt-cat-amt">🪙 ${b.amt}</div>
+
+// ════════════════════════════════════════════════
+//  PLAYER — CONFIRM OVERLAY
+// ════════════════════════════════════════════════
+function openConfirm() {
+  if (!ST.lastSess) return;
+  const sess = ST.lastSess;
+  const cats = sess.cats || [];
+  const r = sess.current_round;
+  const wine = sess.wines[r - 1];
+  const bets = Object.entries(ST.draft).filter(([, b]) => b.sel && b.amt > 0);
+  if (!bets.length) { toast('Сделайте хотя бы одну ставку'); return; }
+  const total = bets.reduce((s, [, b]) => s + b.amt, 0);
+
+  ST.inConfirm = true;
+
+  const cards = bets.map(([cid, b]) => {
+    const cat = cats.find(c => c.id === cid);
+    return `<div class="confirm-card">
+      <div class="confirm-cat-info">
+        <div class="confirm-cat-lbl">${esc(cat?.name || cid)}</div>
+        <div class="confirm-cat-sel">${esc(b.sel)}</div>
+        <div class="confirm-cat-mult">×${cat?.mult || 2} при угадывании</div>
+      </div>
+      <div class="confirm-amt">🪙${b.amt}</div>
     </div>`;
   }).join('');
-  const othersHTML=buildOthersHTML(sess,r);
+
+  const me = (sess.players || {})[ST.pid];
+  const myChips = me ? me.chips : 0;
+  const remaining = myChips - total;
+
+  const ov = document.createElement('div');
+  ov.id = 'confirm-overlay';
+  ov.className = 'overlay';
+  ov.innerHTML = `
+    <div class="page-header">
+      <button class="back" onclick="closeConfirmOverlay()">← Изменить</button>
+      <div class="page-title">${esc(wine?.name || 'Вино №' + r)}</div>
+    </div>
+    <div class="overlay-scroll">
+      <div class="lbl" style="margin-bottom:14px">Подтвердите ставки</div>
+      ${cards}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid rgba(201,168,76,.12);margin-top:4px">
+        <span style="font-size:14px;color:rgba(245,240,232,.5)">Итого ставка</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold)">🪙${total}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(245,240,232,.45);padding:6px 0">
+        <span>Останется после ставки</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:${remaining >= 0 ? 'var(--gold)' : 'var(--lose)'}">🪙${remaining}</span>
+      </div>
+    </div>
+    <div class="overlay-footer">
+      <button class="btn-ghost" style="flex:1" onclick="closeConfirmOverlay()">← Изменить</button>
+      <button class="btn-gold" style="flex:2" onclick="confirmBets()">Подтвердить ✓</button>
+    </div>`;
+  document.body.appendChild(ov);
+}
+
+function closeConfirmOverlay() {
+  ST.inConfirm = false;
+  const ov = $('confirm-overlay');
+  if (ov) ov.remove();
+}
+
+async function confirmBets() {
+  const sess = await dbGet();
+  if (!sess) return;
+  const me = (sess.players || {})[ST.pid];
+  if (!me) { toast('Ошибка: игрок не найден'); return; }
+  const r = sess.current_round;
+
+  // Calculate total spend
+  const myBets = {};
+  let spent = 0;
+  Object.entries(ST.draft).forEach(([cid, b]) => {
+    if (b.sel && b.amt > 0) {
+      myBets[cid] = { sel: b.sel, amt: b.amt };
+      spent += b.amt;
+    }
+  });
+
+  if (spent === 0) { toast('Сделайте хотя бы одну ставку'); return; }
+  if (spent > me.chips) { toast('Недостаточно фишек'); return; }
+
+  // Update DB: add bets and deduct chips
+  const bets = { ...sess.bets };
+  if (!bets[r]) bets[r] = {};
+  bets[r][ST.pid] = myBets;
+
+  const players = { ...sess.players, [ST.pid]: { ...me, chips: me.chips - spent } };
+
+  await dbUpd({ bets, players });
+  closeConfirmOverlay();
+  // Player view will re-render via realtime → drawPlayer
+}
+
+// ════════════════════════════════════════════════
+//  PLAYER — WAITING (FELT) SCREEN
+// ════════════════════════════════════════════════
+function showWaiting(sess, myBets, r, me) {
+  const wine = sess.wines[r - 1];
+  const cats = sess.cats || [];
+
+  const myCards = cats
+    .filter(c => myBets[c.id])
+    .map(c => {
+      const b = myBets[c.id];
+      return `<div class="felt-bet-card">
+        <div class="felt-cat-lbl">${esc(c.name)} · ×${c.mult}</div>
+        <div class="felt-cat-sel">${esc(b.sel)}</div>
+        <div class="felt-cat-amt">🪙 ${b.amt}</div>
+      </div>`;
+    }).join('');
+
+  const totalStake = Object.values(myBets).reduce((s, b) => s + b.amt, 0);
+
   pView(`
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-      <div style="flex:1">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)">${esc(wine?.name||'Вино №'+r)}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+      <div style="flex:1;min-width:0">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(wine?.name || 'Вино №' + r)}</div>
         <div class="lbl" style="margin-top:2px">Ставки приняты · Ожидаем ответа</div>
       </div>
       <div class="spinner"></div>
     </div>
-    <div class="lbl" style="margin-bottom:10px">Ваши ставки</div>
-    ${myCards}
-    <div id="waiting-others">${othersHTML}</div>
-  `,'felt-view');
-}
-function refreshWaitingOthers(sess,r){
-  const el=document.getElementById('waiting-others');
-  if(el)el.innerHTML=buildOthersHTML(sess,r);
-}
-function buildOthersHTML(sess,r){
-  const roundBets=(sess.bets||{})[r]||{},players=sess.players||{};
-  const others=Object.entries(players).filter(([pid])=>pid!==S.pid);
-  if(!others.length)return'';
-  let h=`<div class="others-panel"><div class="others-title">Ставки других игроков</div>`;
-  others.forEach(([pid,p])=>{
-    const pb=roundBets[pid];
-    if(pb){
-      const tags=Object.entries(pb).map(([cid,bet])=>{
-        const cat=(sess.cats||[]).find(c=>c.id===cid);
-        return`<span class="other-tag">${esc(cat?.name||cid)}: ${esc(bet.sel)} 🪙${bet.amt}</span>`;
-      }).join('');
-      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-tags">${tags}</div></div>`;
-    } else {
-      h+=`<div class="other-row"><div class="other-name">${esc(p.name)}</div><div class="other-tags"><span style="font-size:11px;color:rgba(245,240,232,.2)">думает...</span></div></div>`;
-    }
-  });
-  return h+'</div>';
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="lbl">Ваши ставки</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)">Всего: 🪙${totalStake}</div>
+    </div>
+    ${myCards || '<div style="color:rgba(245,240,232,.3);text-align:center;padding:20px;font-size:14px">Без ставок</div>'}
+    <div id="waiting-others">${buildOthersHTML(sess, r)}</div>
+  `, 'felt-bg');
 }
 
-/* ── RESULT ── */
-function showResult(sess,myBets,r,me){
-  const wine=sess.wines[r-1],cats=sess.cats||[];
-  let earned=0,lost=0;
-  const cards=cats.map((cat,i)=>{
-    const ans=wine.answers[cat.id];
-    const myBet=myBets?.[cat.id];
-    const won=myBet&&myBet.sel===ans;
-    const nobet=!myBet;
-    if(won)earned+=myBet.amt*cat.mult;
-    if(!won&&myBet)lost+=myBet.amt;
-    const cls=nobet?'nobet':won?'win':'lose';
-    const icon=nobet?'🤷':won?'🎉':'😔';
-    const earnTxt=nobet?'':(won?`+🪙${myBet.amt*cat.mult}`:`-🪙${myBet.amt}`);
-    return`<div class="result-card ${cls}" style="animation-delay:${i*.1}s">
+function buildOthersHTML(sess, r) {
+  const roundBets = (sess.bets || {})[r] || {};
+  const players = sess.players || {};
+  const others = Object.entries(players).filter(([pid]) => pid !== ST.pid);
+  if (!others.length) return '';
+  let h = `<div class="others-panel"><div class="others-title">Другие игроки</div>`;
+  others.forEach(([pid, p]) => {
+    const pb = roundBets[pid];
+    if (pb && Object.keys(pb).length > 0) {
+      const tags = Object.entries(pb).map(([cid, bet]) => {
+        const cat = (sess.cats || []).find(c => c.id === cid);
+        return `<span class="other-tag">${esc(cat?.name || cid)}: ${esc(bet.sel)} 🪙${bet.amt}</span>`;
+      }).join('');
+      h += `<div class="other-row">
+        <div class="other-name">${esc(p.name)}</div>
+        <div class="other-tags">${tags}</div>
+      </div>`;
+    } else {
+      h += `<div class="other-row">
+        <div class="other-name">${esc(p.name)}</div>
+        <div class="other-tags"><span style="font-size:11px;color:rgba(245,240,232,.2)">думает...</span></div>
+      </div>`;
+    }
+  });
+  return h + '</div>';
+}
+
+// ════════════════════════════════════════════════
+//  PLAYER — RESULT SCREEN
+// ════════════════════════════════════════════════
+function showResult(sess, myBets, r, me) {
+  const wine = sess.wines[r - 1];
+  const cats = sess.cats || [];
+
+  // Calculate totals
+  let earned = 0, lost = 0, betCount = 0;
+  cats.forEach(cat => {
+    const myBet = myBets ? myBets[cat.id] : null;
+    if (!myBet) return;
+    betCount++;
+    if (myBet.sel === wine.answers[cat.id]) {
+      earned += myBet.amt * cat.mult;
+    } else {
+      lost += myBet.amt;
+    }
+  });
+  const net = earned - lost;
+
+  const cards = cats.map((cat, i) => {
+    const ans = wine.answers[cat.id];
+    const myBet = myBets ? myBets[cat.id] : null;
+    const won = myBet && myBet.sel === ans;
+    const nobet = !myBet;
+    const cls = nobet ? 'nobet' : won ? 'win' : 'lose';
+    const icon = nobet ? '🤷' : won ? '🎉' : '😔';
+    let earnTxt = '';
+    if (myBet) {
+      if (won) earnTxt = `+🪙${myBet.amt * cat.mult}`;
+      else earnTxt = `−🪙${myBet.amt}`;
+    }
+    return `<div class="result-card ${cls}" style="animation-delay:${i * 0.1}s">
       <div class="result-icon">${icon}</div>
       <div class="result-info">
-        <div class="result-lbl">${esc(cat.name)} ×${cat.mult}</div>
-        <div class="result-ans">${esc(ans)}</div>
-        ${myBet?`<div class="result-yours">Вы: ${esc(myBet.sel)}</div>`:'<div class="result-yours" style="color:rgba(245,240,232,.2)">Ставки не было</div>'}
+        <div class="result-lbl">${esc(cat.name)} · ×${cat.mult}</div>
+        <div class="result-ans">${esc(ans || '—')}</div>
+        ${myBet
+          ? `<div class="result-yours">Вы: ${esc(myBet.sel)} · 🪙${myBet.amt}</div>`
+          : '<div class="result-yours" style="color:rgba(245,240,232,.2)">Не ставили</div>'}
       </div>
-      ${earnTxt?`<div class="result-earn ${won?'win':'lose'}">${earnTxt}</div>`:''}
+      ${earnTxt ? `<div class="result-earn ${won ? 'win' : 'lose'}">${earnTxt}</div>` : ''}
     </div>`;
   }).join('');
 
-  const net=earned-lost;
-  const isLast=r>=sess.wines.length;
-  const nextBtn=isLast
-    ?`<div style="font-size:13px;color:rgba(245,240,232,.35);text-align:center;padding:8px 0">Ожидаем завершения игры...</div>`
-    :`<div style="font-size:13px;color:rgba(245,240,232,.35);text-align:center;padding:8px 0">Ожидаем следующего вина...</div>`;
+  const totalLabel = net > 0 ? 'Чистый выигрыш' : net < 0 ? 'Чистый проигрыш' : 'Без изменений';
+  const totalColor = net > 0 ? 'var(--win)' : net < 0 ? 'var(--lose)' : 'var(--gold)';
+  const totalDisp = net > 0 ? `+🪙${net}` : net < 0 ? `−🪙${Math.abs(net)}` : `🪙 0`;
 
   pView(`
-    <div style="text-align:center;margin-bottom:16px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);margin-bottom:2px">${esc(wine?.name||'Вино №'+r)}</div>
-      <div class="lbl">Результаты раунда</div>
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);margin-bottom:2px">${esc(wine?.name || 'Вино №' + r)}</div>
+      <div class="lbl">Результаты раунда ${r}/${sess.wines.length}</div>
     </div>
     ${cards}
-    <div class="total-box">
-      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:8px">${net>=0?'Итого заработано':'Итого потеряно'}</div>
-      <div class="total-num" style="color:${net>=0?'#2ecc71':'#e74c3c'}">${net>=0?'+':''} 🪙${net}</div>
-      <div style="font-size:14px;color:rgba(245,240,232,.4);margin-top:6px">Баланс: 🪙${me?me.chips:'—'}</div>
+    ${betCount > 0 ? `<div class="total-box">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,232,.35);margin-bottom:8px">${totalLabel}</div>
+      <div class="total-num" style="color:${totalColor}">${totalDisp}</div>
+      <div style="font-size:14px;color:rgba(245,240,232,.45);margin-top:8px">Баланс: 🪙${me ? me.chips : '—'}</div>
+    </div>` : `<div class="total-box">
+      <div style="font-size:14px;color:rgba(245,240,232,.4)">Ставок в этом раунде не было</div>
+      <div style="font-size:13px;color:rgba(245,240,232,.3);margin-top:4px">Баланс: 🪙${me ? me.chips : '—'}</div>
+    </div>`}
+    ${lbSmallHTML(sess)}
+    <div style="margin-top:18px;text-align:center;font-size:13px;color:rgba(245,240,232,.35)">
+      ${r >= sess.wines.length ? 'Ожидаем завершения игры...' : 'Ожидаем следующего вина...'}
     </div>
-    ${lbSmall(sess)}
-    <div style="margin-top:16px">${nextBtn}</div>
-  `,'result-view');
-  if(earned>0)flyChips(earned);
+  `, 'felt-bg');
+
+  // Trigger chip-fly animation only if this is a new reveal (not a re-render)
+  if (earned > 0 && ST.lastResultRound !== r) {
+    setTimeout(() => flyChips(earned), 400);
+  }
+  ST.lastResultRound = r;
 }
 
-function updateResult(sess,myBets,r,me){showResult(sess,myBets,r,me)}
-
-function lbSmall(sess){
-  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  return`<div class="div"></div>
-  <div class="lbl" style="margin-bottom:10px">Рейтинг</div>
-  <div class="lb">${sorted.map(([id,p],i)=>`
-    <div class="lb-row ${id===S.pid?'me':''}">
-      <div class="lb-rank ${i<3?'top':''}">${i+1}</div>
-      <div class="avatar" style="background:${avc(p.name)};width:28px;height:28px;font-size:12px">${p.name[0].toUpperCase()}</div>
-      <div style="flex:1;font-size:14px">${esc(p.name)}${id===S.pid?' <span style="font-size:11px;opacity:.45">(вы)</span>':''}</div>
-      <div class="lb-chips">🪙 ${p.chips}</div>
-    </div>`).join('')}
-  </div>`;
+function flyChips(amount) {
+  const n = Math.min(Math.ceil(amount / 15), 14);
+  const balanceEl = $('p-chips-hdr');
+  const targetRect = balanceEl ? balanceEl.getBoundingClientRect() : null;
+  for (let i = 0; i < n; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'chip-fly';
+      el.textContent = '🪙';
+      const startX = 25 + Math.random() * 50; // % of viewport
+      const startY = 55; // %
+      let tx, ty;
+      if (targetRect) {
+        const startPxX = window.innerWidth * (startX / 100);
+        const startPxY = window.innerHeight * (startY / 100);
+        tx = (targetRect.left + targetRect.width / 2) - startPxX;
+        ty = (targetRect.top + targetRect.height / 2) - startPxY;
+      } else {
+        tx = (Math.random() - 0.5) * 200;
+        ty = -(100 + Math.random() * 250);
+      }
+      el.style.cssText = `left:${startX}%;top:${startY}%;--tx:${tx}px;--ty:${ty}px;animation-delay:${Math.random() * 0.4}s`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2000);
+    }, i * 70);
+  }
 }
 
+function lbSmallHTML(sess) {
+  const sorted = Object.entries(sess.players || {}).sort((a, b) => b[1].chips - a[1].chips);
+  return `<div class="div"></div>
+    <div class="lbl" style="margin-bottom:10px">Рейтинг</div>
+    <div class="lb">${sorted.map(([id, p], i) => `
+      <div class="lb-row ${id === ST.pid ? 'me' : ''}">
+        <div class="lb-rank ${i < 3 ? 'top' : ''}">${i + 1}</div>
+        <div class="avatar" style="background:${avc(p.name)};width:28px;height:28px;font-size:12px">${esc(p.name[0].toUpperCase())}</div>
+        <div style="flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}${id === ST.pid ? ' <span style="font-size:11px;opacity:.45">(вы)</span>' : ''}</div>
+        <div class="lb-chips">🪙 ${p.chips}</div>
+      </div>`).join('')}
+    </div>`;
+}
 
-
-/* ── FINAL ── */
-function finalHTML(sess){
-  const sorted=Object.entries(sess.players||{}).sort((a,b)=>b[1].chips-a[1].chips);
-  const w=sorted[0];
-  return`<div style="text-align:center;padding:40px 0 20px">
+// ════════════════════════════════════════════════
+//  PLAYER — FINAL SCREEN
+// ════════════════════════════════════════════════
+function finalHTML(sess) {
+  const sorted = Object.entries(sess.players || {}).sort((a, b) => b[1].chips - a[1].chips);
+  const winner = sorted[0];
+  return `<div style="text-align:center;padding:32px 0 16px">
     <div class="crown">🏆</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);margin-bottom:4px">Игра завершена!</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold);margin-bottom:6px">Игра завершена!</div>
     <div style="font-size:14px;color:rgba(245,240,232,.4);margin-bottom:6px">${esc(sess.name)}</div>
-    ${w?`<div style="font-size:15px;color:rgba(245,240,232,.6)">Победитель: <strong style="color:var(--gl)">${esc(w[1].name)}</strong></div>`:''}
+    ${winner ? `<div style="font-size:15px;color:rgba(245,240,232,.7);margin-top:8px">Победитель:<br><strong style="color:var(--gl);font-family:'Cormorant Garamond',serif;font-size:22px">${esc(winner[1].name)}</strong></div>` : ''}
   </div>
   <div class="div"></div>
   <div class="lbl" style="margin-bottom:12px">Итоговая таблица</div>
   <div class="lb">
-    ${sorted.map(([id,p],i)=>`<div class="lb-row ${i===0?'winner':''} ${id===S.pid?'me':''}">
-      <div class="lb-rank ${i<3?'top':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
-      <div class="avatar" style="background:${avc(p.name)};width:32px;height:32px;font-size:14px">${p.name[0].toUpperCase()}</div>
-      <div style="flex:1"><div style="font-size:15px">${esc(p.name)}${id===S.pid?' <span style="font-size:11px;opacity:.45">(вы)</span>':''}</div>${i===0?'<div style="font-size:11px;color:var(--gold);margin-top:2px">Победитель!</div>':''}</div>
-      <div class="lb-chips">🪙 ${p.chips}</div>
-    </div>`).join('')}
+    ${sorted.map(([id, p], i) => `
+      <div class="lb-row ${i === 0 ? 'winner' : ''} ${id === ST.pid ? 'me' : ''}">
+        <div class="lb-rank ${i < 3 ? 'top' : ''}">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
+        <div class="avatar" style="background:${avc(p.name)};width:32px;height:32px;font-size:14px">${esc(p.name[0].toUpperCase())}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}${id === ST.pid ? ' <span style="font-size:11px;opacity:.45">(вы)</span>' : ''}</div>
+          ${i === 0 ? '<div style="font-size:11px;color:var(--gold);margin-top:2px">Победитель!</div>' : ''}
+        </div>
+        <div class="lb-chips">🪙 ${p.chips}</div>
+      </div>`).join('')}
+  </div>
+  <div style="height:20px"></div>
+  <button class="btn-ghost" onclick="leaveSession()" style="width:100%">Выйти →</button>`;
+}
+
+function leaveSession() {
+  clearLS();
+  if (ST.channel) SB.removeChannel(ST.channel);
+  ST.channel = null;
+  // Reset state
+  Object.assign(ST, {
+    role: null, code: null, pid: null, pname: null,
+    draft: {}, curRound: 0, lastResultRound: 0, inConfirm: false,
+    lastSess: null
+  });
+  $('resume-box').innerHTML = '';
+  go('screen-landing');
+}
+
+// ════════════════════════════════════════════════
+//  DIALOG
+// ════════════════════════════════════════════════
+function showDialog({ title, text, confirmText, cancelText, confirmDanger, onConfirm }) {
+  const c = $('dialog-container');
+  c.innerHTML = `<div class="dialog-overlay" onclick="if(event.target===this)closeDialog()">
+    <div class="dialog">
+      <h3>${esc(title)}</h3>
+      <p>${esc(text)}</p>
+      <div class="dialog-btns">
+        <button class="btn-ghost" style="flex:1" onclick="closeDialog()">${esc(cancelText || 'Отмена')}</button>
+        <button class="btn-gold" style="flex:1;${confirmDanger ? 'background:var(--lose);color:#fff' : ''}" id="dialog-ok">${esc(confirmText || 'OK')}</button>
+      </div>
+    </div>
   </div>`;
+  $('dialog-ok').onclick = () => { closeDialog(); onConfirm && onConfirm(); };
 }
+function closeDialog() { $('dialog-container').innerHTML = ''; }
 
-/* ── CHIP ANIMATION ── */
-function flyChips(amt){
-  const n=Math.min(Math.ceil(amt/15),14);
-  for(let i=0;i<n;i++){
-    setTimeout(()=>{
-      const el=document.createElement('div');
-      el.className='chip-fly';el.textContent='🪙';
-      const tx=(Math.random()-.5)*200,ty=-(100+Math.random()*250);
-      el.style.cssText=`left:${25+Math.random()*50}%;top:55%;--tx:${tx}px;--ty:${ty}px;animation-delay:${Math.random()*.5}s`;
-      document.body.appendChild(el);setTimeout(()=>el.remove(),1800);
-    },i*70);
+// ════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async () => {
+  renderWines();
+  go('screen-landing');
+  await checkResume();
+});
+
+// Handle visibility change — re-fetch on tab focus
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible' && ST.code) {
+    const sess = await dbGet();
+    if (!sess) return;
+    if (ST.role === 'host') refreshHost(sess);
+    else drawPlayer(sess);
   }
-}
+});
 
-window.addEventListener('DOMContentLoaded',()=>{renderWines();go('screen-landing')});
 </script>
 </body>
 </html>
